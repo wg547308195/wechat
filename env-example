@@ -1,6 +1,6 @@
 [database]
 type = mysql
-hostname = 127.0.0.1
+hostname = 192.168.0.106
 database = hzkj
 username = root
 password = root

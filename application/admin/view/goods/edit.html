@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>产品管理-编辑产品</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="/admin/layui/css/layui.css" media="all">
+</head>
+<body>
+
+  <div class="layui-form" lay-filter="goods_edit" id="goods_edit" style="padding: 20px 0 0 0;">
+    <div class="layui-form-item">
+      <label class="layui-form-label">名称</label>
+      <div class="layui-input-inline">
+        <input type="text" name="name" lay-verify="required" placeholder="请输入产品标题" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">描述</label>
+      <div class="layui-input-inline" style="margin-bottom: 20px; width: 550px;">
+        <textarea id="id_desc" name="desc" lay-verify="edit_desc" style="display: none;"></textarea>
+      </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+      <label class="layui-form-label">性能</label>
+      <div class="layui-input-block">
+        <textarea name="performance" placeholder="请输入描述内容" style="margin-bottom: 20px; width: 550px;" class="layui-textarea"></textarea>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">报价</label>
+      <div class="layui-input-inline">
+        <input type="text" name="price" lay-verify="required" placeholder="请输入价格" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">排序</label>
+      <div class="layui-input-inline">
+        <input type="number" name="sort" lay-verify="required" placeholder="请输入排序数.越小越靠前" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item">
+    <label class="layui-form-label">是否上架</label>
+      <div class="layui-input-block">
+        <input type="radio" name="status" value="true" title="上架">
+        <input type="radio" name="status" value="false" title="下架">
+      </div>
+    </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">产品图片</label>
+        <div class="layui-input-inline">
+          <input name="imgs" lay-verify="required"   readonly id="LAY_imgsSrc" placeholder="图片地址" class="layui-input">
+        </div>
+        <div class="layui-input-inline layui-btn-container" style="width: auto;">
+          <button type="button" class="layui-btn layui-btn-primary" id="LAY_imgUpload">
+            <i class="layui-icon">&#xe67c;</i>上传图片
+          </button>
+          <button class="layui-btn layui-btn-primary" layadmin-event="avartatPreview">查看图片</button >
+        </div>
+     </div>
+    <input type="hidden" name="site_id">
+    <div class="layui-form-item layui-hide">
+      <input type="button" lay-submit lay-filter="LAY-goods-front-submit" id="LAY-goods-front-submit" value="确认">
+    </div>
+  </div>
+
+  <script src="/admin/layui/layui.js"></script>  
+  <script>
+    layui.config({
+      base: '/admin/' //静态资源所在路径
+    }).extend({
+      index: 'lib/index' //主入口模块
+    }).use(['index', 'form', 'layedit', 'layer','goods/goods'], function(){
+      var $ = layui.$
+      ,form = layui.form;
+
+      var row = window.parent.ooob;
+      form.val("goods_edit", {
+        "name": row.name
+        ,"performance": row.performance
+        ,"price": row.price
+        ,"imgs": row.imgs
+        ,"sort": row.sort
+        ,"status": String(Boolean(row.status == 1))
+        ,"site_id": row.site_id
+      })
+
+      var layedit = layui.layedit;
+      layedit.set({
+          //暴露layupload参数设置接口 --详细查看layupload参数说明
+          uploadImage: {
+              url: '/admin/upload/upload_editor',
+              accept: 'image',
+              acceptMime: 'image/*',
+              exts: 'jpg|png|gif|bmp|jpeg',
+              size: '10240'
+          }
+          , uploadVideo: {
+              url: '/admin/upload/upload_editor',
+              accept: 'video',
+              acceptMime: 'video/*',
+              exts: 'mp4|flv|avi|rm|rmvb',
+              size: '20480'
+          }
+          //右键删除图片/视频时的回调参数，post到后台删除服务器文件等操作，
+          //传递参数：
+          //图片： imgpath --图片路径
+          //视频： filepath --视频路径 imgpath --封面路径
+          // , calldel: {
+          //     url: '/Attachment/DeleteFile'
+          // }
+          //开发者模式 --默认为false
+          , devmode: true
+          //插入代码设置
+          , codeConfig: {
+              hide: true,  //是否显示编码语言选择框
+              default: 'javascript' //hide为true时的默认语言格式
+          }
+          , tool: [
+            'code', 'strong', 'italic', 'underline', 'del', 'addhr', '|', 'fontFomatt', 'colorpicker', 'face'
+            , '|', 'left', 'center', 'right', '|', 'link', 'unlink', 'image_alt', 'anchors'
+            , '|','table', 'fullScreen'
+        ]
+      });
+      var index = layedit.build('id_desc',{
+        height: 400 //设置编辑器高度
+      });
+      layedit.setContent(index, row.desc, false);
+      form.verify({
+          edit_desc: function(value) { 
+              return layedit.sync(index);
+          }
+      });
+
+    });
+  </script>
+</body>
+</html>

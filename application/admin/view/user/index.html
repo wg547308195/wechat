@@ -1,0 +1,86 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>用户管理</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="/admin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="/admin/style/admin.css" media="all">
+</head>
+<body>
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+        <div class="layui-form-item">
+          <div class="layui-inline">
+            <label class="layui-form-label">昵称</label>
+            <div class="layui-input-block">
+              <input type="text" name="nickname" placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+          </div>
+          <div class="layui-inline">
+            <label class="layui-form-label">手机号</label>
+            <div class="layui-input-block">
+              <input type="text" name="mobile" placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+          </div>
+          <div class="layui-inline">
+            <button class="layui-btn layuiadmin-btn-useradmin" lay-submit lay-filter="LAY-user-front-search">
+              <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="layui-card-body">
+        <div style="padding-bottom: 10px;">
+          <!-- <button class="layui-btn layuiadmin-btn-useradmin" data-type="batchdel">删除</button> -->
+          <!-- <button class="layui-btn layuiadmin-btn-useradmin" data-type="add">添加</button> -->
+        </div>
+        
+        <table id="LAY-user-manage" lay-filter="LAY-user-manage"></table>
+        <script type="text/html" id="imgTpl"> 
+          <a href={{ d.headimgurl }} target="_blank"><img style="display: inline-block; width: 50%; height: 100%;" src= {{ d.headimgurl }}></a>
+        </script> 
+        <script type="text/html" id="table-user">
+          <!-- <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a> -->
+          <!-- <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="recharge"><i class="layui-icon layui-icon-dollar"></i>充值</a> -->
+          <!-- <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="deduction"><i class="layui-icon layui-icon-dollar"></i>扣费</a> -->
+        </script>
+      </div>
+    </div>
+  </div>
+
+  <script src="/admin/layui/layui.js"></script>  
+  <script>
+  layui.config({
+    base: '/admin/' //静态资源所在路径
+  }).extend({
+    index: 'lib/index' //主入口模块
+  }).use(['index', 'user/user', 'table'], function(){
+    var $ = layui.$
+    ,form = layui.form
+    ,table = layui.table;
+    
+    //监听搜索
+    form.on('submit(LAY-user-front-search)', function(data){
+      var field = data.field;
+      //执行重载
+      table.reload('LAY-user-manage', {
+        where: field
+      });
+    });
+    
+    $('.layui-btn.layuiadmin-btn-useradmin').on('click', function(){
+      var type = $(this).data('type');
+      active[type] ? active[type].call(this) : '';
+    });
+  });
+  </script>
+</body>
+</html>
