@@ -199,4 +199,22 @@ class SoUser extends Service
         Db::commit();
         return $model;
     }
+    /**
+     * 删除
+     * @param string $id 经销商id
+     * @return mixed
+     */
+    public function wechat_delete($openid = '') {
+        $model = model('user/so_user');
+        if (empty($openid)) {
+            $this->error = '信息获取失败';
+            return false;
+        }
+        $info = $model->where('openid','=',$openid)->find();
+        if (!$info) {
+            return true;
+        }
+        $info->delete(true);
+        return $info;
+    }
 }
