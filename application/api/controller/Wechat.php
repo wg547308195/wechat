@@ -26,40 +26,21 @@ class Wechat
 
         $app->server->push(function($message) use ($user) {
             $fromUser = $user->get($message['FromUserName']);
-            \Log::write("[微信回调]".print_r($fromUser, true), 'debug');
+            \Log::write("[用户信息]".print_r($fromUser, true), 'debug');
+            \Log::write("[消息]".print_r($message, true), 'debug');
 
-            //取消关注
-            if($fromUser['subscribe'] == 0){
-                $info = model('user/so_user','service')->wechat_delete($fromUser['openid']);
-                if(!$info){
-                    return '服务器发生错误，请稍后再试！'; 
-                }
-                return '';
+            //处理消息
+            $ret_message = model('message/message','service')->set_message($message,$fromUser);
+            if(!$ret_message){
+                return '服务器发生错误，请稍后再试！'; 
             }
-
-            $user = model('user/so_user')->where('openid',$fromUser['openid'])->find();
-            //没有信息时记录信息
-            if(empty($user)){
-                $data = [
-                    'openid' => $fromUser['openid'],
-                    'nick_name' => $fromUser['nickname'],
-                    'mobile' => '',
-                    'sex' => $fromUser['sex'],
-                    'city' => $fromUser['city'],
-                    'province' => $fromUser['province'],
-                    'headimgurl' => $fromUser['headimgurl'],
-                ];
-                $custom = model('user/so_user','service')->create($data);
-                if(!$custom){
-                    return '服务器发生错误，请稍后再试！'; 
-                } 
-            }
-            //$this->responseMsg();
-            return "{$fromUser['nickname']} 您好！欢迎关注我的公众号!";
+            return $ret_message;
         });
 
         $app->server->serve()->send();
     }
+
+    
 
     //数据存储
     public  function profile()
