@@ -52,6 +52,13 @@
           <!-- <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="recharge"><i class="layui-icon layui-icon-dollar"></i>充值</a> -->
           <!-- <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="deduction"><i class="layui-icon layui-icon-dollar"></i>扣费</a> -->
         </script>
+        <script type="text/html" id="buttonTpl">
+          {{#  if(d.subscribe == '1'){ }}
+            <button class="layui-btn layui-btn-normal layui-btn-xs">已关注</button>
+          {{#  } else{ }}
+            <button class="layui-btn layui-btn-warm layui-btn-xs">未关注</button>
+          {{#  } }}
+        </script>
       </div>
     </div>
   </div>

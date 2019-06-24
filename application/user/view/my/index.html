@@ -1,0 +1,20 @@
+{include file="common/header" /}
+	<link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/0.4.2/weui.min.css">
+	<body ontouchstart>
+		<div class="weui_panel weui_panel_access">
+			<div class="weui_panel_bd">
+				<?php foreach ($goods as $key => $info) : ?>
+			    <a href="javascript:void(0);" class="weui_media_box weui_media_appmsg">
+		            <div class="weui_media_hd">
+		                <img class="weui_media_appmsg_thumb" src="{$info['imgs']}" alt="">
+		            </div>
+		            <div class="weui_media_bd">
+		                <h4 class="weui_media_title">{$info['name']}</h4>
+		                <!-- <p class="weui_media_desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</p> -->
+		            </div>
+		        </a>
+		        <?php endforeach ?>
+			</div>
+		</div>
+	</body>
+</html>

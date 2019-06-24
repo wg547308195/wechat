@@ -3,6 +3,7 @@ namespace app\user\service;
 
 use app\common\library\Service;
 use think\Db;
+use EasyWeChat\Factory;
 
 class SoUser extends Service
 {
@@ -117,11 +118,6 @@ class SoUser extends Service
             $this->error = '用户已存在';
             return false;
         }
-        $info = $model->where('mobile','=',$data['mobile'])->find();
-        if (!empty($info->id)){
-            $this->error = '手机号已存在';
-            return false;
-        }
         Db::startTrans();
         try{
             $model->isUpdate(false)->save($data);
@@ -141,6 +137,9 @@ class SoUser extends Service
      * @return mixed
      */
     public function bind($openid = '', $custom_id = '',$mobile = '') {
+        \Log::write("[openid]".print_r($openid, true), 'debug');
+        \Log::write("[custom_id]".print_r($custom_id, true), 'debug');
+        \Log::write("[mobile]".print_r($mobile, true), 'debug');
         $model = model('user/so_user');
         $user = $model->where('openid','=',$openid)->find();
         if (empty($user->id)) {
@@ -199,22 +198,71 @@ class SoUser extends Service
         Db::commit();
         return $model;
     }
+
     /**
-     * 删除
-     * @param string $id 经销商id
-     * @return mixed
+     * 实例化用户
+     * @return array
      */
-    public function wechat_delete($openid = '') {
+    public function init() {
+        $user = [
+            'id'         => 0,
+            'openid'     => '',
+            'custom_id'  => 0,
+            'nickname'   => '',
+            'mobile'     => '',
+            'headimgurl' => '',
+            'province'   => '',
+            'city'       => '',
+            'sex'        => '',
+            'unionid'    => '',
+            'status'     => 0,
+            'create_time'  => 0
+        ];
+        $user_auth = cookie('user_auth');
+        if ($user_auth) {
+            $user_auth = json_decode(decrypt($user_auth), true);
+            $user = model('user/so_user')->where('id','=',$user_auth['id'])->find();
+        }
+        return $user;
+    }
+
+    /**
+     * 用户注册&登录
+     * @return $user
+     */
+    public function login(){
         $model = model('user/so_user');
-        if (empty($openid)) {
-            $this->error = '信息获取失败';
-            return false;
+
+        $options = [
+            'app_id' => config('wechat.app_id'),
+            'secret' => config('wechat.secret'),
+            'token' => config('wechat.token'),
+            'oauth' => [
+                'scopes'   => ['snsapi_userinfo'],
+                'callback' => '/user/login/dologin',
+            ]
+        ];
+        $app = Factory::officialAccount($options);
+        $userinfo = $app->oauth->user();
+        $userinfo = $userinfo->toArray();
+
+        $user = $model->where('openid','=',$userinfo['id'])->find();
+        if(empty($user->id)) {
+            $data = [];
+            $data['nickname'] = $userinfo['nickname'];
+            $data['openid']   = $userinfo['id'];
+            $user = $this->create($data);
+            if (!$user){
+                $this->error = $this->error;
+                return false;
+            }
         }
-        $info = $model->where('openid','=',$openid)->find();
-        if (!$info) {
-            return true;
-        }
-        $info->delete(true);
-        return $info;
+
+        $auth = [];
+        $auth['id'] = $user->id;
+        $auth['openid'] = $userinfo['id'];
+        cookie('user_auth', encrypt(json_encode($auth)));
+
+        return $user;
     }
 }

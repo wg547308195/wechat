@@ -20,20 +20,21 @@ layui.define(['table', 'form'], function(exports){
     ,cols: [[
       {field: 'nickname', title: '昵称'}
       ,{field: 'mobile', title: '手机'}
-      ,{field: 'address', title: '地址'}
       ,{field: 'headimgurl', title: '头像',width:100, align: 'center', templet: '#imgTpl'}
+      ,{field: 'province', title: '省份'}
       ,{field: 'city', title: '城市'}
+      ,{field: 'subscribe', title: '是否关注',align: 'center',templet: '#buttonTpl', minWidth: 80}
+      ,{field: 'subscribe_time', title: '关注时间',minWidth: 120}
       ,{field: 'sex', title: '性别',templet: function(d){
         return d.sex == 0 ? '未知' : (d.sex == 1 ? '男' : '女');
       }}
       ,{field: 'custom_name', title: '经销商',width:200,'templet':function (d) {
-          if (d.custom.nickname) {
+          if (d.custom) {
               return d.custom.nickname;
           }
           return '-';
       }}
       ,{field: 'create_time', title: '创建时间',width:200, sort: true}
-      ,{title: '操作', width: 250, align:'center', fixed: 'right', toolbar: '#table-user'}
     ]]
     ,page: true
     ,limit: 30

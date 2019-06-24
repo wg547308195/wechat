@@ -1,0 +1,79 @@
+{include file="common/header" /}
+	<body ontouchstart>
+		<form id="form" onsubmit="return checkForm()">
+			<div class="weui-cells weui-cells_form">
+			  <div class="weui-cell">
+		        <div class="weui-cell__hd"><label for="custom" class="weui-label">经销商</label></div>
+		        <div class="weui-cell__bd">
+		        	<input type="hidden" name="custom_id">
+		        	<input class="weui-input" id="customs" type="text" value="" readonly="">
+		        </div>
+		      </div>
+			  <div class="weui-cell">
+			    <div class="weui-cell__hd">
+			      <label class="weui-label">手机号</label>
+			    </div>
+			    <div class="weui-cell__bd">
+			    	<input class="weui-input" type="tel" name="mobile" placeholder="请输入手机号">
+			    </div>
+			  </div>
+			</div>
+			<div class="weui-msg__opr-area pt-30">
+		        <p class="weui-btn-area">
+		            <button type="submit" class="weui-btn weui-btn_primary">完成</button>
+		        </p>
+		    </div>
+		</form>
+        <script type="text/javascript">
+        	var customs;
+        	var real_customs = new Array();
+        	var display_customs = new Array();
+        	$.getJSON("<?php echo url('user/my/customs') ?>",{},function(ret){
+				if (ret.code == 200){
+					for (i = 0; i < ret.data.length; i++) {
+						real_customs[ret.data[i].nickname] = ret.data[i].id;
+						display_customs.push(ret.data[i].nickname);
+					}
+				}
+			});
+        	$("#customs").picker({
+			  title: "请选择经销商",
+			  cols: [
+			    {
+			      textAlign: 'center',
+			      values: display_customs,
+			    }
+			  ],
+			  onChange:function(p, v, d){
+			  	$("input[name='custom_id']").val(real_customs[p.value]);
+			  },
+			  onClose: function(p, v, d) {
+		 		$("input[name='custom_id']").val(real_customs[p.value]);
+			  }
+			});
+			//表单验证
+        	function checkForm(){
+        		if(!$("input[name='custom_id']").val()){
+        			$.toptip('请选择经销商！', 'error');
+        			return false;
+        		}
+        		if(!$("input[name='mobile']").val()){
+        			$.toptip('请填写手机号码！', 'error');
+        			return false;
+        		}
+        		$_form = $('#form');
+				var params = $_form.serializeArray();
+				$.post("<?php echo url('user/my/bind') ?>",params,function(ret){
+					if (ret.code == 200) {
+						$.toptip(ret.msg, 'success');
+						window.location.href = '/user/my/index';
+					} else {
+						$.toptip(ret.msg, 'error');
+					}
+					return false;
+				},'json');
+        		return false;
+        	}
+        </script>
+	</body>
+</html>
