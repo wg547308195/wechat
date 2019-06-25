@@ -23,7 +23,7 @@ class Message extends Service
                             return false;
                         }
                     }
-                    $ret_message = "{$fromUser['nickname']} 您好！欢迎关注哈珠科技！点击<a href='".url('user/my/bind','','',true)."'>查看产品</a>！";
+                    $ret_message = "{$fromUser['nickname']} 您好！欢迎关注哈珠科技！点击<a href='".url('user/my/index','','',true)."'>查看产品</a>！";
                     if (empty($ret['custom_id'])){
                         $ret_message .= "请<a href='".url('user/my/bind','','',true)."'>点击绑定经销商</a>！";
                     }

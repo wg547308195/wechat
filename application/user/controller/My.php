@@ -7,7 +7,7 @@ class My extends Init
 {
     protected function initialize()
     {
-        parent::initialize();
+        // parent::initialize();
     }
 
     public function index(){
