@@ -10,12 +10,42 @@
 </head>
 <body>
 
-  <div class="layui-form" lay-filter="layuiadmin-form-custom" id="layuiadmin-form-custom" style="padding: 20px 0 0 0;">
+  <div class="layui-form" lay-filter="layuiadmin-form-goods" id="layuiadmin-form-goods" style="padding: 20px 0 0 0;">
     <div class="layui-form-item">
       <label class="layui-form-label">名称</label>
       <div class="layui-input-inline">
-        <input type="text" name="name" lay-verify="required" placeholder="请输入产品" autocomplete="off" class="layui-input">
+        <input type="text" name="name" lay-verify="required" placeholder="请输入产品名称" autocomplete="off" class="layui-input">
       </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">分类</label>
+      <div class="layui-input-inline">
+        <select name="cat_id" lay-verify="required">
+          <option value="">请选择分类</option>
+          <?php foreach($category as $info) { ?>
+          <option value="{$info['id']}">{$info['name']}</option>
+          <?php } ?>
+        </select>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">图片</label>
+      <div class="layui-input-inline">
+        <input name="img" lay-verify="required" readonly id="LAY_imgSrc" placeholder="图片地址" value="" class="layui-input">
+      </div>
+      <div class="layui-input-inline layui-btn-container" style="width: auto;">
+        <button type="button" class="layui-btn layui-btn-primary" id="LAY_imgUpload">
+          <i class="layui-icon">&#xe67c;</i>上传图片
+        </button>
+        <button class="layui-btn layui-btn-primary" layadmin-event="avartatPreview">查看图片</button >
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">保修期</label>
+      <div class="layui-input-inline">
+        <input type="text" name="time_length" lay-verify="required" placeholder="请输入保修期" autocomplete="off" class="layui-input">
+      </div>
+      <div class="layui-form-mid layui-word-aux">天</div>
     </div>
     <div class="layui-form-item">
       <label class="layui-form-label">描述</label>
@@ -29,37 +59,19 @@
         <textarea name="performance" placeholder="请输入描述内容" style="margin-bottom: 20px; width: 550px;" class="layui-textarea"></textarea>
       </div>
     </div>
-      <div class="layui-form-item">
-      <label class="layui-form-label">报价</label>
-      <div class="layui-input-inline">
-        <input type="text" name="price" lay-verify="required" placeholder="请输入价格" autocomplete="off" class="layui-input">
-      </div>
-    </div>
     <div class="layui-form-item">
       <label class="layui-form-label">排序</label>
       <div class="layui-input-inline">
-        <input type="number" name="sort" lay-verify="required" placeholder="请输入排序数.越小越靠前" autocomplete="off" class="layui-input">
+        <input type="number" name="sort" value="100" lay-verify="required" placeholder="请输入排序数.越小越靠前" autocomplete="off" class="layui-input">
       </div>
     </div>
     <div class="layui-form-item">
-    <label class="layui-form-label">是否上架</label>
+      <label class="layui-form-label">是否上架</label>
       <div class="layui-input-block">
         <input type="radio" name="status" value="1" title="上架" checked>
         <input type="radio" name="status" value="0" title="下架">
       </div>
     </div>
-      <div class="layui-form-item">
-        <label class="layui-form-label">产品图片</label>
-        <div class="layui-input-inline">
-          <input name="imgs" lay-verify="required"   readonly id="LAY_imgsSrc" placeholder="图片地址" value="" class="layui-input">
-        </div>
-        <div class="layui-input-inline layui-btn-container" style="width: auto;">
-          <button type="button" class="layui-btn layui-btn-primary" id="LAY_imgUpload">
-            <i class="layui-icon">&#xe67c;</i>上传图片
-          </button>
-          <button class="layui-btn layui-btn-primary" layadmin-event="avartatPreview">查看图片</button >
-        </div>
-     </div>
     <div class="layui-form-item layui-hide">
       <input type="button" lay-submit lay-filter="LAY-goods-front-submit" id="LAY-goods-front-submit" value="确认">
     </div>

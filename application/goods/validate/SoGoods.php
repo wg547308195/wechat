@@ -11,12 +11,13 @@
  	 * @var [type]
  	 */
  	protected $rule = [
- 		'goods_id|产品信息' => 'require|max:25',
+ 		'goods_id|产品信息' => 'require|max:30',
  		'name|产品名称' => 'require|max:50',
- 		'price|产品报价' => 'require',
- 		'imgs|产品图片' => 'require',
+ 		'cat_id|产品分类' => 'require|number|max:10',
+ 		'img|产品图片' => 'require|max:255',
  		'desc|描述信息' => 'require',
  		'performance|性能指标' => 'require',
+ 		'time_length|保修期' => 'require|number|max:10',
         'status|状态' => 'require|between:0,1',
  	];
 
@@ -25,8 +26,8 @@
  	 * @var [type]
  	 */
  	protected $scene =[
- 		'create' => ['name','imgs','desc','price','performance','status'],
- 		'edit' => ['goods_id','name','imgs','desc','price','performance','status'],
+ 		'add' => ['name','cat_id','img','desc','performance','time_length','status'],
+ 		'edit' => ['goods_id','name','cat_id','img','desc','performance','status'],
  	];
 
  }

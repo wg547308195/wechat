@@ -7,21 +7,22 @@ use EasyWeChat\Kernel\Messages\Text;
 define("TOKEN", "123456");
 class Wechat 
 {
+    private $options;
+
     public function initialize() {
         parent::initialize();
+        $config = model('setting/SysSetting','service')->info();
+        $this->options = [
+            'app_id' => $config['wechat_app_id'],
+            'secret' => $config['wechat_secret'],
+            'token' => $config['wechat_token']
+        ];
         //定义token时使用，其他时候注释掉
         //$this->responseMsg();
     }
 
     public function index(){
-
-        $options = [
-            'app_id' => config('wechat.app_id'),
-            'secret' => config('wechat.secret'),
-            'token' => config('wechat.token')
-        ];
-
-        $app = Factory::officialAccount($options);
+        $app = Factory::officialAccount($this->options);
         $user = $app->user;
 
         $app->server->push(function($message) use ($user) {
@@ -48,16 +49,16 @@ class Wechat
         $url = 'http://'.$_SERVER['HTTP_HOST'];
         $target_url = substr($_SERVER['REQUEST_URI'], 1,strlen($_SERVER['REQUEST_URI']));
 
-        $options = [
-            'app_id' => config('wechat.app_id'),
-            'secret' => config('wechat.secret'),
-            'token' => config('wechat.token'),
+        $_options = [
+            'app_id' => $this->options['app_id'],
+            'secret' => $this->options['secret'],
+            'token' => $this->options['token'],
             'oauth' => [
                 'scopes'   => ['snsapi_userinfo'],
                 'callback' => $url.'/api/wechat/oauth_callback?target='.$target_url,
             ],
         ];
-        $app = Factory::officialAccount($options);
+        $app = Factory::officialAccount($_options);
         $oauth = $app->oauth;
         Session::set('target_url', $target_url);
         \Log::write("[记录内容]".print_r(Session::get('target_url'), true), 'debug');
@@ -69,13 +70,8 @@ class Wechat
     //回调
     public  function oauth_callback()
     {
-        $options = [
-            'app_id' => config('wechat.app_id'),
-            'secret' => config('wechat.secret'),
-            'token' => config('wechat.token')
-        ];
 
-        $app = Factory::officialAccount($options);
+        $app = Factory::officialAccount($this->options);
         $oauth = $app->oauth;
 
         // 获取 OAuth 授权结果用户信息

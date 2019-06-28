@@ -1,8 +1,8 @@
 <?php
 /**
  * Created by SanGuoYun.
- * User: xuewl
- * Date: 2018/2/11
+ * User: 李勇
+ * Date: 2019/6/27
  * Time: 14:55
  */
 namespace app\message\service;
@@ -19,39 +19,50 @@ class Sms extends Service
     public function _initialize()
     {
         parent::_initialize();
-        $this->config = config('service.sms');
+        $_config = model('setting/SysSetting','service')->info();
+        $this->config = [
+            'accessKeyId' => $_config['sms_accessKeyId'],
+            'accessKeySecret' => $_config['sms_accessKeySecret'],
+            'sign' => $_config['sms_sign']
+        ];
     }
 
     /**
-     * 短信发送接口
-     * @param  [type] $mobile [description]
-     * @param  [type] $tpl_id [场景]
+     * 短信发送接口（单条）
+     * @param  [type] $mobile [发送对象：支持多个用数组传入，上限为20个]
+     * @param  [type] $tpl_id [模板id]
      * @param  array  $params [mobile=>123,code =>123]
      * @param  array  $extra  [description]
      * @return [type]         [description]
      */
-    public function send($mobile, $tpl_id, $params = [], $extra = []) {
-        $tpl_code = config('service.sms.tpls.'.$tpl_id);
-        if(!$tpl_code){
-            $this->error = '短信场景无效';
-            return false;       
+    public function send_one($mobile, $tpl_id, $params = [], $is_valid = 0) {
+        if (empty($mobile)){
+            $this->error = '短信发送对象不能为空';
+            return false;
         }
-      
-        //注册场景,修改密码,信息变更,异地登陆,身份验证 时获取验证码
-        if('login' == $tpl_id || 'register' == $tpl_id || 'validate' == $tpl_id || 'delivery' == $tpl_id){
+        $tpl = model('message/sms_template')->where('template_id','=',$tpl_id)->find();
+        if (empty($tpl->id)){
+            $this->error = '短信模板不存在';
+            return false;
+        }
+        if ($tpl->status == -1){
+            $this->error = '该模板未启用';
+            return false;
+        }
+        //带验证码
+        if($is_valid == 1){
             $params['code'] = $this->get_verification_code($tpl_id, $mobile, 4);
         }
         $client  = new Client($this->config);
         $sendSms = new SendSms;
         $sendSms->setPhoneNumbers($mobile);
         $sendSms->setSignName($this->config['sign']);
-        $sendSms->setTemplateCode($tpl_code);
+        $sendSms->setTemplateCode($tpl_id);
         $sendSms->setTemplateParam($params);
         $result = $client->execute($sendSms);
         $send = ($result->Code == 'OK') ? true : false;
 
-        if($send === false)
-        {
+        if($send === false){
             $this->error = $result->Message;
             return false;
         }
@@ -59,45 +70,77 @@ class Sms extends Service
     }
 
     /**
-     * 检测验证码
-     * @param        $mobile
-     * @param        $code
-     * @param string $tpl_id
+     * 短信发送接口（多条，不支持验证码）
+     * @param  [type] $mobile [发送对象：支持多个用数组传入，上限为20个]
+     * @param  [type] $tpl_id [模板id]
+     * @param  array  $params [mobile=>123,code =>123]
+     * @param  array  $extra  [description]
+     * @return [type]         [description]
      */
-    public function valid($mobile, $code, $tpl_id = '') {
+    public function send_all($mobile = [], $tpl_id, $params = [], $extra = []) {
+        if (empty($mobile)){
+            $this->error = '短信发送对象不能为空';
+            return false;
+        }
+        $tpl = model('message/sms_template')->where('template_id','=',$tpl_id)->find();
+        if (empty($tpl->id)){
+            $this->error = '短信模板不存在';
+            return false;
+        }
+        if ($tpl->status == -1){
+            $this->error = '该模板未启用';
+            return false;
+        }
+        $mobile = array_chunk($mobile, 20);
+        foreach ($mobile as $key => $value) {
+            $client  = new Client($this->config);
+            $sendSms = new SendSms;
+            $sendSms->setPhoneNumbers($value);
+            $sendSms->setSignName($this->config['sign']);
+            $sendSms->setTemplateCode($tpl_id);
+            $sendSms->setTemplateParam($params);
+            $result = $client->execute($sendSms);
+            $send = ($result->Code ==  'OK') ? true : false;
 
+            if($send === false){
+                $this->error = $result->Message;
+                return false;
+            }
+        }
+        
+        return true;
     }
+
     /**
      * 生成验证码
-     * @param  string $from   [场景，注册：register，修改密码：fax]
-     * @param  string $length     []
+     * @param  string $tpl_id   [模板id]
+     * @param  string $mobile   [手机号码]
+     * @param  string $length   [验证码长度]
      */
-    public function get_verification_code($from = 'register', $mobile = '', $length = 4)
+    public function get_verification_code($tpl_id = '', $mobile = '', $length = 4)
     {
-        $key = md5($from.$mobile);
+        $key = md5($tpl_id.$mobile);
         $code = cache($key);
         if(!$code) {
             $code = $this->generate_code($length);
             cache($key,$code,300);
-            \Log::write("生成短信验证码(".$from.$mobile.")".print_r($code, true), 'debug');
+            \Log::write("生成短信验证码(".$tpl_id.$mobile.")".print_r($code, true), 'debug');
         }
         return $code;
     }
+
     /**
      * 验证码检测
-     * @param  string $sms  [验证码]
-     * @param  string $from [场景，注册：register，修改密码：fax]
+     * @param  string $tpl_id  [模板id]
+     * @param  string $code    [验证码]
+     * @param  string $mobile  [手机号码]
      */
-    public function check_verification_code($from = 'register' ,$code = '0' ,$mobile = '')
+    public function check_verification_code($tpl_id = '' ,$code = '0' ,$mobile = '')
     { 
-        //万能验证码
-        if($code == '123456' && \Env::get('app_status', 'local') != 'online')
-            return true; 
-        $cachekey = md5($from.$mobile);
+        $cachekey = md5($tpl_id.$mobile);
         $cachecode = cache($cachekey);
-        if(!$cachecode)
-        {
-            $this->error = '验证码不存在';
+        if(!$cachecode) {
+            $this->error = '验证码已过期，请重新发送！';
             return false;
         }
 

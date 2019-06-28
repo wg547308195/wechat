@@ -11,12 +11,30 @@ class Setting extends Admin
     }
 
     /**
-     * 设置首页
+     * 网站设置
      */
     public function index(Request $request){
         $info = $this->service->info();
         $this->assign('info',$info);
         return $this->fetch('index');
+    }
+
+    /**
+     * 微信设置
+     */
+    public function wechat(Request $request){
+        $info = $this->service->info();
+        $this->assign('info',$info);
+        return $this->fetch('wechat');
+    }
+
+    /**
+     * 短信设置
+     */
+    public function sms(Request $request){
+        $info = $this->service->info();
+        $this->assign('info',$info);
+        return $this->fetch('sms');
     }
 
     /**

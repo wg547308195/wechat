@@ -26,7 +26,12 @@ class Goods extends Admin
             if ($request->has('status','param',true)){
                 $maps['status'] = $request->param('status');
             }
-            $list = $this->service->lists($maps,'update_time DESC',$this->page,$this->limit,$field,$relations,$attrs); 
+            $list = $this->service->lists($maps,'create_time DESC',$this->page,$this->limit,$field,$relations,$attrs);
+            if (!empty($list)){
+                foreach ($list as $key => $value) {
+                    $value->category;
+                }
+            }
             if ($list->isEmpty()){
                 return $this->result('',0,'暂无数据');
             }
@@ -42,25 +47,19 @@ class Goods extends Admin
     public function add(Request $request)
     {
         if ($request->isAjax()){
-            $date = [];
-            $date['name'] = (string) $request->post('name');
-            $date['price'] = $request->post('price');
-            $date['imgs'] =  $request->post('imgs');
-            $date['desc'] = $request->post('desc');
-            $date['performance'] = $request->post('performance');
-            $date['sort'] = (int) $request->post('sort');
-            $date['status'] = (int) $request->post('status');
-
-            $validate = new \app\goods\validate\SoGoods;
-            if(!$validate->scene('create')->check($date)){
-                return $this->result('',0,$validate->getError());
+            //验证
+            $validate = $this->validate($request->post(), 'app\goods\validate\SoGoods.add');
+            if (true !== $validate) {
+                return $this->result('',0,$validate);
             }
-            $result = $this->service->create($date);
+            $result = $this->service->create($request->post());
             if ($result === false){
                 return $this->result('',0,$this->service->getError());
             }
             return $this->result($result,200,'添加成功');
         }
+        $category = model('goods/so_category','service')->lists([],'create_time ASC',false,false,true);
+        $this->assign('category',$category);
         return $this->fetch('add');
     }
 
@@ -72,9 +71,10 @@ class Goods extends Admin
         if ($request->isAjax()){
             $data = $request->post();
             $data['status'] = ($data['status'] == 'true') ? 1 : 0;
-            $validate = new \app\goods\validate\SoGoods;
-            if(!$validate->scene('edit')->check($data)){
-                return $this->result('',0,$validate->getError());
+            //验证
+            $validate = $this->validate($data, 'app\goods\validate\SoGoods.edit');
+            if (true !== $validate) {
+                return $this->result('',0,$validate);
             }
             $result = $this->service->save($data,$data['goods_id']);
             if ($result === false) {
@@ -82,6 +82,8 @@ class Goods extends Admin
             }
             return $this->result($result,200,'修改成功');
         }
+        $category = model('goods/so_category','service')->lists([],'create_time ASC',false,false,true);
+        $this->assign('category',$category);
         return $this->fetch('edit');
     }
 

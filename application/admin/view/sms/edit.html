@@ -1,0 +1,66 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>短信管理-编辑模板</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="/admin/layui/css/layui.css" media="all">
+</head>
+<body>
+
+  <div class="layui-form" lay-filter="sms_edit" id="sms_edit" style="padding: 20px 0 0 0;">
+    <div class="layui-form-item">
+      <label class="layui-form-label">模板ID</label>
+      <div class="layui-input-inline">
+        <input type="text" name="template_id" lay-verify="required" placeholder="请输入阿里云短信模板ID" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">使用场景</label>
+      <div class="layui-input-inline">
+        <input type="text" name="scene" lay-verify="required" placeholder="请输入使用场景，如：节日祝福" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+      <label class="layui-form-label">模板内容</label>
+      <div class="layui-input-block">
+        <textarea name="content" placeholder="请输入模板内容" lay-verify="required" style="margin-bottom: 20px; width: 450px;" class="layui-textarea"></textarea>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">启用状态</label>
+      <div class="layui-input-block">
+        <input type="radio" name="status" value="true" title="启用" checked>
+        <input type="radio" name="status" value="false" title="禁用">
+      </div>
+    </div>
+    <div class="layui-form-item layui-hide">
+      <input type="button" lay-submit lay-filter="LAY-sms-front-submit" id="LAY-sms-front-submit" value="确认">
+    </div>
+  </div>
+
+  <script src="/admin/layui/layui.js"></script>  
+  <script>
+  layui.config({
+    base: '/admin/' //静态资源所在路径
+  }).extend({
+    index: 'lib/index' //主入口模块
+  }).use(['index', 'form'], function(){
+    var $ = layui.$
+    ,form = layui.form;
+
+    var row = window.parent.ooob;
+    form.val("sms_edit", {
+      "template_id": row.template_id
+      ,"content": row.content
+      ,"scene": row.scene
+      ,"status": String(Boolean(row.status == 1))
+    })
+  })
+  </script>
+</body>
+</html>
