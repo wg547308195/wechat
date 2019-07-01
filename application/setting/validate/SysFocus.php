@@ -11,7 +11,7 @@
  	 * @var [type]
  	 */
  	protected $rule = [
- 		'name|名称' => 'require|max:50',
+ 		'name|标题' => 'require|max:50',
  		'img|图片地址' => 'require|max:255',
  		'link|链接地址' => ['regex'=>'/\b(([\w-]+:\/\/?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/)))/'],
  		'sort|排序' => 'number|max:10',

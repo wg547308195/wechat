@@ -19,7 +19,7 @@ layui.define(['table', 'form', 'upload'], function(exports){
     elem: '#LAY-focus-manage'
     ,url: '/admin/focus/index' //模拟接口
     ,cols: [[
-      {field: 'name', title: '名称'}
+      {field: 'name', title: '标题'}
       ,{field: 'img', title: '图片', align:'center', width: 100, templet: '#imgTpl'}
       ,{field: 'link', title: '链接'}
       ,{field: 'sort', title: '排序', sort: true}
