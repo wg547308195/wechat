@@ -33,15 +33,33 @@
       </div>
     </div>
     <div class="layui-form-item">
+      <label class="layui-form-label">选择地区</label>
+      <div class="layui-input-inline" style="width: 120px;">
+          <select name="province" id="province" lay-filter="province" lay-verify="required">
+              <option value="">请选择省</option>
+          </select>
+      </div>
+      <div class="layui-input-inline" style="width: 120px;">
+          <select name="city" id="city" lay-filter="city" lay-verify="required">
+              <option value="">请选择市</option>
+          </select>
+      </div>
+      <div class="layui-input-inline" style="width: 120px;">
+          <select name="area_id" id="area_id" lay-filter="area_id" lay-verify="required">
+              <option value="">请选择县/区</option>
+          </select>
+      </div>
+    </div>
+    <div class="layui-form-item">
       <label class="layui-form-label">昵称</label>
       <div class="layui-input-inline">
-        <input type="text" name="nickname" lay-verify="required" placeholder="请输入客户昵称" autocomplete="off" class="layui-input">
+        <input type="text" name="nickname" placeholder="请输入客户昵称" autocomplete="off" class="layui-input">
       </div>
     </div>
     <div class="layui-form-item">
       <label class="layui-form-label">邮箱</label>
       <div class="layui-input-inline">
-        <input type="text" name="email" lay-verify="required|email" placeholder="请输入客户邮箱" autocomplete="off" class="layui-input">
+        <input type="text" name="email" lay-verify="email" placeholder="请输入客户邮箱" autocomplete="off" class="layui-input">
       </div>
     </div>
     <div class="layui-form-item layui-hide">
@@ -64,9 +82,54 @@
       "username": row.username
       // ,"password": row.password
       ,"mobile": row.mobile
+      ,"area_id": row.area_id
       ,"nickname": row.nickname
       ,"email": row.email
     })
+
+    /* 选择地区开始 */
+    // 初始化省
+    initAddress();
+    function initAddress() {
+        $.ajax({
+            type:'GET',
+            url:'/admin/custom/get_area_children',
+            success:function(data) {
+                var dataArr = [];
+                for (var i in data.data) {
+                    dataArr.push(data.data[i]); //属性                        
+                }
+                $.each(dataArr, function(i, item) {
+                    $("#province").append("<option value='"+item.id+"'>" + item.name + "</option>");
+                });
+                form.render();
+            }
+        });
+    }
+    //选择省时触发事件获取其下市数据
+    form.on('select(province)', function(data){
+       $.getJSON("/admin/custom/get_area_children?parent_id="+data.value, function(data){
+        var optionstring = "";
+        $.each(data.data, function(i,item){
+         optionstring += "<option value=\"" + item.id + "\" >" + item.name + "</option>";
+        });
+        $("#city").html('<option value=""></option>' + optionstring);
+        form.render('select'); //这个很重要
+       });
+    });
+    
+    //选择省时触发事件获取其下区数据
+    form.on('select(city)', function(data){
+       $.getJSON("/admin/custom/get_area_children?parent_id="+data.value, function(data){
+        var optionstring = "";
+        $.each(data.data, function(i,item){
+         optionstring += "<option value=\"" + item.id + "\" >" + item.name + "</option>";
+        });
+        $("#area_id").html('<option value=""></option>' + optionstring);
+        form.render('select'); //这个很重要
+       });
+    });
+    /* 选择地区结束 */
   })
   </script>
 </body>

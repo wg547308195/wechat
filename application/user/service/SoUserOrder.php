@@ -1,12 +1,11 @@
 <?php
-namespace app\custom\service;
+namespace app\user\service;
 
 use app\common\library\Service;
 use think\Db;
 
-class SoCustom extends Service
+class SoUserOrder extends Service
 {
-    use \app\common\library\traits\Model;
 
     // 模型验证
     protected $modelValidate = null;
@@ -18,29 +17,21 @@ class SoCustom extends Service
     }
 
     /**
-     * 经销商列表
+     * 维保单列表
      * @param mixed $maps   查询条件
      * @return mixed
      */
-    public function lists($maps = '', $order = 'create_time DESC', $page = 0, $limit = 12, $field = true, $relations = [], $attrs =[]) {
-        $model = model('custom/so_custom');
-        
-        if (isset($maps['id'])) {
-            $model = $model->where('id','=',$maps['id']);
+    public function lists($maps = '', $order = '', $page = 0, $limit = 12, $field = true, $relations = [], $attrs =[]) {
+        $model = model('user/SoUserOrder');
+        if (isset($maps['uid'])) {
+            $model = $model->where('uid','=',$maps['uid']);
         }
-        if (!empty($maps['username'])){
-            $model = $model->where('username','like','%'.$maps['username'].'%');
-        }
-        if (!empty($maps['mobile'])){
-            $model = $model->where('mobile','like','%'.$maps['mobile'].'%');
-        }
-        if (!empty($maps['email'])){
-            $model = $model->where('email','like','%'.$maps['email'].'%');
+        if (isset($maps['goods_id'])) {
+            $model = $model->where('goods_id','=',$maps['goods_id']);
         }
         if (isset($maps['status'])) {
             $model = $model->where('status','=',$maps['status']);
         }
-
         $model = $model->order($order)->field($field);
 
         if($page !== false) {
@@ -80,17 +71,14 @@ class SoCustom extends Service
      * return mix
      */
     public function detail($maps = '',$field = true,$relations = [],$attrs = []){
-        $model = model('custom/so_custom');
+        $model = model('user/SoUserOrder');
         if (!empty($maps['id'])){
             $model = $model->where('id', '=', $maps['id']);
-        }
-        if (!empty($maps['mobile'])) {
-            $model = $model->where('mobile', '=', $maps['mobile']);
         }
 
         $result = $model->field($field)->relation($relations)->find();
         if (!$result) {
-            $this->error = '经销商不存在';
+            $this->error = '未找到维保单信息';
             return false;
         }
 
@@ -101,32 +89,26 @@ class SoCustom extends Service
                 return $result->$attr = $result->getAttr($attr);
             }, $attrs);
         }
+        Db::commit();
         return $result;
     }
 
     /**
-     * 创建经销商
-     * @param array $data 经销商信息
+     * 添加
+     * @param array $params 维保单相关信息
      * @return mixed
      */
-    public function create($data = []) {
-        $model = model('custom/so_custom');
-        if (empty($data)) {
-            $this->error = '经销商信息不能为空';
+    public function create($params = []) {
+        $model = model('user/SoUserOrder');
+        if (empty($params)){
+            $this->error = '维保单信息不能为空';
             return false;
         }
-        $info = $model->where('mobile','=',$data['mobile'])->find();
-        if (!empty($info->id)){
-            $this->error = '手机号已存在';
-            return false;
-        }
-        $data['salt'] = \fast\Random::nozero(6);
-        $data['password'] = md5(md5($data['password']).$data['salt']);
         Db::startTrans();
         try{
-            $model->isUpdate(false)->save($data);
+            $model->isUpdate(false)->save($params);
         } catch (\Exception $e) {
-            Db::rollback();
+            \Db::rollback();
             $this->error = $e->getMessage();
             return false;
         }
@@ -136,38 +118,20 @@ class SoCustom extends Service
 
     /**
      * 编辑
-     * @param array  $data        经销商信息
-     * @param string $id  经销商id
+     * @param int $id 维保单id
+     * @param array $params 维保单相关信息
      * @return mixed
      */
-    public function save($data = [], $id = '') {
-        $model = model('custom/so_custom');
-        if (empty($data)) {
-            $this->error = '经销商信息不能为空';
+    public function save($params = [], $id = '') {
+        $model = model('user/SoUserOrder');
+        $info = $model->where('id','=',$id)->find();
+        if (empty($info->id)) {
+            $this->error = '维保单信息未找到';
             return false;
-        }
-        $custom = $model->where('id','=',$id)->find();
-        if (empty($custom->id)) {
-            $this->error = '经销商不存在';
-            return false;
-        }
-        if (isset($data['mobile'])){
-            $info = $model->where('id','neq',$id)->where('mobile','=',$data['mobile'])->find();
-            if (!empty($info->id)){
-                $this->error = '手机号已存在';
-                return false;
-            }
-        }
-        if (isset($data['password'])){
-            if ($custom->password === $data['password']){
-                unset($data['password']);
-            }else{
-                $data['password'] = md5(md5($data['password']).$custom->salt);
-            }
         }
         Db::startTrans();
         try {
-            $model->isUpdate(true)->save($data);
+            $model->isUpdate(true)->save($params);
         } catch (\Exception $e) {
             $this->error = $e->getMessage();
             Db::rollback();
@@ -179,44 +143,52 @@ class SoCustom extends Service
 
     /**
      * 软删除
-     * @param string $id 经销商id
+     * @param int $id 维保单id
      * @return mixed
      */
     public function destroy($id = '') {
-        $model = model('custom/so_custom');
+        $model = model('user/SoUserOrder');
         if (empty($id)) {
-            $this->error = '要删除的经销商不能为空';
+            $this->error = '要删除的维保单信息不能为空';
             return false;
         }
         $info = $model->where('id','=',$id)->find();
-        if (!$info) {
-            $this->error = '要删除的经销商不存在';
+        if (empty($info->id)) {
+            $this->error = '维保单信息未找到';
             return false;
         }
         Db::startTrans();
         try {
-            $model->destroy($id);
+            $model->destroy(['id' => $id]);
         } catch (\Exception $e) {
             $this->error = $e->getMessage();
             Db::rollback();
             return false;
         }
         Db::commit();
-        return $model;
+        return $info;
     }
 
     /**
-     * 状态修改
+     * 处理维保单
      * @param [array] $data [信息]
      * return mix
      */
-    public function set_status($data = []){
-        $model = model('custom/so_custom');
+    public function handle($data = []){
+        $model = model('user/SoUserOrder');
         \Db::startTrans();
         try{
             $result = $model->getOrFail($data['id']);
         }catch (\Exception $e) {
             $this->error = '信息不存在';
+            return false;
+        }
+        if ($data['status'] == -1 && empty($data['remark'])){
+            $this->error = '请填写审核备注';
+            return false;
+        }
+        if ($result->status == 1){
+            $this->error = '该维保单已处理';
             return false;
         }
         try{
@@ -229,27 +201,5 @@ class SoCustom extends Service
         }
         \Db::commit();
         return $result;
-    }
-
-    /**
-     * 登录
-     */
-    public function login($params = []){
-        $model = model('custom/so_custom');
-        Db::startTrans();
-
-        $custom = $model->where('username' ,'=' ,$params['username'])->find();
-        if(!$custom) {
-            $this->error = '用户名或密码错误';
-            return false;
-        }
-        if($custom['password'] !== md5(md5($params['password']) . $custom['salt'])){
-            $this->error = '用户名或密码错误';
-            return false;
-        }
-        //写入登陆cookie
-        cookie('custom_account_token',encrypt($custom->username."_\t".$custom->password));
-        Db::commit();
-        return $custom;
     }
 }

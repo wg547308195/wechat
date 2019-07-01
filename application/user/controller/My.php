@@ -7,7 +7,7 @@ class My extends Init
 {
     protected function initialize()
     {
-        // parent::initialize();
+        parent::initialize();
     }
 
     public function index(){
@@ -16,28 +16,25 @@ class My extends Init
         return $this->fetch('index');
     }
 
-    public function bind(Request $request){
+    public function register(Request $request){
         if ($this->user['custom_id'] > 0){
             return $this->redirect(url('user/my/index'));
         }
         if ($request->isAjax()){
-            //验证
-            $validate = $this->validate($request->post(), 'app\user\validate\SoUser.bind');
+            $validate = $this->validate($request->post(), 'app\user\validate\SoUser.register');
             if (true !== $validate) {
                 return $this->result('',0,$validate);
             }
-            $openid = $this->user['openid'];
-            $custom_id = $request->post('custom_id',0);
-            $mobile = $request->post('mobile','');
+            $data = $request->post();
+            $data['openid'] = $this->user['openid'];
 
-            $result = model('user/so_user','service')->bind($openid, $custom_id, $mobile);
+            $result = model('user/so_user','service')->register($data);
             if ($result === false){
                 return $this->result('',0,model('user/so_user','service')->getError());
             }
-            //注意：此处状态码一定和前端配置的状态码相同，否则数据会出问题(正常返回200，错误返回0)
-            return $this->result($result,200,'绑定成功');
+            return $this->result($result,200,'注册成功');
         }
-        return $this->fetch('bind');
+        return $this->fetch('register');
     }
 
     //经销商数据
@@ -46,7 +43,6 @@ class My extends Init
         if ($list->isEmpty()){
             return $this->result('',0,'暂无数据');
         }
-        //注意：此处状态码一定和前端配置的状态码相同，否则数据会出问题(正常返回200，错误返回0)
         return $this->result($list,200);
     }
 }

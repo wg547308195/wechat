@@ -19,10 +19,17 @@ layui.define(['table', 'form'], function(exports){
     ,url: '/admin/custom/index' //模拟接口
     ,cols: [[
       {field: 'username', title: '用户名', minWidth: 100}
-      ,{field: 'nickname', title: '昵称'}
       ,{field: 'mobile', title: '手机'}
+      ,{field: 'area_name', title: '地区',align:'center', width: 200,templet:function (d) {
+          if (d.area) {
+              return d.area.merger_name.replace('中国,','');
+          }
+          return '-';
+      }}
+      ,{field: 'nickname', title: '昵称'}
       ,{field: 'email', title: '邮箱',width:200}
       ,{field: 'create_time', title: '创建时间',width:200, sort: true}
+      ,{field: 'status', title:'状态', align:'center', width:120, templet: '#set-status', unresize: true}
       ,{title: '操作', width: 250, align:'center', fixed: 'right', toolbar: '#table-custom'}
     ]]
     ,page: true
@@ -49,18 +56,38 @@ layui.define(['table', 'form'], function(exports){
   //监听工具条
   table.on('tool(LAY-custom-manage)', function(obj){
     var data = obj.data;
-    if(obj.event === 'del'){
-      layer.prompt({
-        formType: 1
-        ,title: '敏感操作，请验证口令'
-      }, function(value, index){
-        layer.close(index);
-        
-        layer.confirm('真的删除行么', function(index){
-          obj.del();
-          layer.close(index);
+    if(obj.event === 'delete'){
+      layer.confirm('确定删除吗', function(index){
+          //ajax开始
+            $.ajax({
+              url: '/admin/custom/delete',
+              type: "POST",
+              data: {'id':data.id},
+              dataType: 'json',
+              success: function(res) {
+                if (res.code == 0){
+                  layer.msg(res.msg, {
+                    offset: '15px'
+                    ,icon: 2
+                    ,anim: 6
+                    ,time: 1000
+                  }, function(){});
+                  return false;
+                }else{
+                  layer.msg(res.msg, {
+                    offset: '15px'
+                    ,icon: 1
+                    ,time: 1000
+                  }, function(){
+                    table.reload('LAY-custom-manage'); //数据刷新
+                    layer.close(index); //关闭弹层
+                  });
+                }
+                return false;
+              }
+            });
+            return false;
         });
-      });
     } else if(obj.event === 'edit'){
       var tr = $(obj.tr);
       //将row对象赋给子页面
@@ -70,7 +97,7 @@ layui.define(['table', 'form'], function(exports){
         ,title: '编辑客户'
         ,content: '/admin/custom/edit'
         ,maxmin: true
-        ,area: ['500px', '450px']
+        ,area: ['600px', '650px']
         ,btn: ['确定', '取消']
         ,yes: function(index, layero){
           var iframeWindow = window['layui-layer-iframe'+ index]

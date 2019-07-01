@@ -13,7 +13,6 @@ layui.define(['table', 'form'], function(exports){
   ,table = layui.table
   ,form = layui.form;
 
-  //用户管理
   table.render({
     elem: '#LAY-category-manage'
     ,url: '/admin/category/index' //模拟接口

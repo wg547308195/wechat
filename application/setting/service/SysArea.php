@@ -65,16 +65,15 @@ class SysArea extends Service
      * @param int $parent_id
      * @return array
      */
-    public function get_children($parent_id = 0 ,$order = '`id` ASC') 
+    public function get_children($parent_id = 100000 ,$order = 'id ASC') 
     {
         if((int) $parent_id < 1)
         {
             $this->error = '地区信息有误';
             return false;
         }
-        $lists = $this->model->where(array('parent_id' => $parent_id))->order($order)->select();
-        if($lists === false)
-        {
+        $lists = $this->model->where('parent_id','=',$parent_id)->order($order)->select();
+        if($lists === false){
             $this->error = $this->model->getError();
             return false;
         }

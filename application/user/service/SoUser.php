@@ -131,34 +131,37 @@ class SoUser extends Service
     }
 
     /**
-     * 绑定用户手机号和经销商
-     * @param array  $openid    用户openid
-     * @param string $id  用户id
+     * 用户注册
+     * @param string  $params[openid]    用户openid
+     * @param string  $params[custom_id] 经销商id
+     * @param string  $params[mobile]    手机号码
+     * @param string  $params[realname]  真实姓名
+     * @param string  $params[address]   所在地址
      * @return mixed
      */
-    public function bind($openid = '', $custom_id = '',$mobile = '') {
-        \Log::write("[openid]".print_r($openid, true), 'debug');
-        \Log::write("[custom_id]".print_r($custom_id, true), 'debug');
-        \Log::write("[mobile]".print_r($mobile, true), 'debug');
+    public function register($params = []) {
         $model = model('user/so_user');
-        $user = $model->where('openid','=',$openid)->find();
+        $user = $model->where('openid','=',$params['openid'])->find();
         if (empty($user->id)) {
             $this->error = '用户不存在';
             return false;
         }
-        $custom = model('custom/so_custom')->where('id','=',$custom_id)->find();
+        $custom = model('custom/so_custom')->where('id','=',$params['custom_id'])->find();
         if (empty($custom->id)){
             $this->error = '经销商不存在';
             return false;
         }
-        $info = $model->where('id','neq',$user->id)->where('mobile','=',$mobile)->find();
+        $info = $model->where('id','neq',$user->id)->where('mobile','=',$params['mobile'])->find();
         if (!empty($info->id)){
             $this->error = '手机号已被使用';
             return false;
         }
         $data = [];
-        $data['custom_id'] = $custom_id;
-        $data['mobile'] = $mobile;
+        $data['custom_id'] = $params['custom_id'];
+        $data['mobile'] = $params['mobile'];
+        $data['realname'] = $params['realname'];
+        $data['address'] = $params['address'];
+
         Db::startTrans();
         try {
             $model->isUpdate(true)->save($data,['id'=>$user->id]);

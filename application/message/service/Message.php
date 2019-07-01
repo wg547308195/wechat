@@ -23,9 +23,9 @@ class Message extends Service
                             return false;
                         }
                     }
-                    $ret_message = "{$fromUser['nickname']} 您好！欢迎关注哈珠科技！点击<a href='".url('user/my/index','','',true)."'>查看产品</a>！";
+                    $ret_message = "{$fromUser['nickname']} 您好！欢迎关注哈珠科技！点击进入<a href='".url('user/my/index','','',true)."'>个人中心</a>！";
                     if (empty($ret['custom_id'])){
-                        $ret_message .= "请<a href='".url('user/my/bind','','',true)."'>点击绑定经销商</a>！";
+                        $ret_message .= "请<a href='".url('user/my/register','','',true)."'>点击注册</a>！";
                     }
 		            return  $ret_message;
 		            break;
@@ -76,7 +76,6 @@ class Message extends Service
                 }
                 return $user_info;
             }
-
 
             $user_info = model('user/so_user')->where('openid',$info['openid'])->find();
             //没有信息时记录信息

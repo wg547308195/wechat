@@ -63,7 +63,7 @@
         		}
         		$_form = $('#form');
 				var params = $_form.serializeArray();
-				$.post("<?php echo url('user/my/bind') ?>",params,function(ret){
+				$.post("<?php echo url('user/my/register') ?>",params,function(ret){
 					if (ret.code == 200) {
 						$.toptip(ret.msg, 'success');
 						window.location.href = '/user/my/index';

@@ -11,7 +11,7 @@ class SmsTemplate extends Validate
       'template_id|模板id' => 'require|max:20|unique:sms_template',
       'content|内容' => 'require|max:255',
       'scene|场景' => 'require|max:50',
-      'status|状态 ' => 'number|in:-1,1'
+      'status|状态 ' => 'in:-1,1'
     ];
 
      /**

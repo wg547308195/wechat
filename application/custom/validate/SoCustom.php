@@ -12,7 +12,7 @@ class SoCustom extends Validate
       'mobile|手机号' => 'require|mobile',
       'nickname|昵称' => 'max:50',
       'email|电子邮箱' => 'email|max:100',
-      'status|账户状态' => 'number|in:-1,1'
+      'status|账户状态' => 'in:-1,1'
     ];
 
      /**
@@ -27,6 +27,6 @@ class SoCustom extends Validate
     protected $scene = [
         'add'  => ['username','nickname','mobile','email'],
         'edit'  => ['nickname','mobile','email'],
-        'disabled' => ['status'],
+        'set_status' => ['status']
     ];
 }

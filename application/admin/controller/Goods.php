@@ -92,14 +92,11 @@ class Goods extends Admin
      */
     public function delete(Request $request)
     {
-        if ($request->isAjax()) {
-            $result = $this->service->destroy($request->post('goods_id'));
-            if ($result === false) {
-                return $this->result('',0,$this->service->getError());
-            }
-            return $this->result($result,200,'删除成功');
+        $result = $this->service->destroy($request->post('goods_id'));
+        if ($result === false) {
+            return $this->result('',0,$this->service->getError());
         }
-        return $this->fetch('delete'); 
+        return $this->result($result,200,'删除成功');
     }
 
 }

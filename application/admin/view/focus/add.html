@@ -1,0 +1,63 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>焦点图管理-添加焦点图</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="/admin/layui/css/layui.css" media="all">
+</head>
+<body>
+
+  <div class="layui-form" lay-filter="layuiadmin-form-focus" id="layuiadmin-form-focus" style="padding: 20px 0 0 0;">
+    <div class="layui-form-item">
+      <label class="layui-form-label">名称</label>
+      <div class="layui-input-inline">
+        <input type="text" name="name" lay-verify="required" placeholder="请输入焦点图名称" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">图片</label>
+      <div class="layui-input-inline">
+        <input name="img" lay-verify="required" readonly id="LAY_imgSrc" placeholder="图片地址" class="layui-input">
+      </div>
+      <div class="layui-input-inline layui-btn-container" style="width: auto;">
+        <button type="button" class="layui-btn layui-btn-primary" id="LAY_imgUpload">
+          <i class="layui-icon">&#xe67c;</i>上传图片
+        </button>
+        <button class="layui-btn layui-btn-primary" layadmin-event="avartatPreview">查看图片</button >
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">链接</label>
+      <div class="layui-input-inline">
+        <input type="text" name="link" placeholder="请输入链接地址" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">排序</label>
+      <div class="layui-input-inline">
+        <input type="number" name="sort" value="100" placeholder="请输入排序数.越小越靠前" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item layui-hide">
+      <input type="button" lay-submit lay-filter="LAY-focus-front-submit" id="LAY-focus-front-submit" value="确认">
+    </div>
+  </div>
+
+  <script src="/admin/layui/layui.js"></script>  
+  <script>
+  layui.config({
+    base: '/admin/' //静态资源所在路径
+  }).extend({
+    index: 'lib/index' //主入口模块
+  }).use(['index', 'form', 'setting/focus'], function(){
+    var $ = layui.$
+    ,form = layui.form;
+  })
+  </script>
+</body>
+</html>

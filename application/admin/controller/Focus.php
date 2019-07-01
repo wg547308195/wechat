@@ -3,14 +3,14 @@ namespace app\admin\controller;
 
 use think\Request;
 
-class Category extends Admin
+class Focus extends Admin
 {
 	protected function initialize() {
         parent::initialize();
-        $this->service = model('goods/so_category','service');
+        $this->service = model('setting/sys_focus','service');
     }
 
-    //分类列表
+    //列表
     public function index(Request $request)
     {
     	if ($request->isAjax()){
@@ -19,18 +19,17 @@ class Category extends Admin
 	    	if ($list->isEmpty()){
                 return $this->result('',0,'暂无数据');
             }
-	    	//注意：此处状态码一定和前端配置的状态码相同，否则数据会出问题(正常返回200，错误返回0)
 	    	return $this->result($list,200);
     	}
     	return $this->fetch('index');
     }
 
-    //添加分类
+    //添加
     public function add(Request $request)
     {
     	if ($request->isAjax()){
 	        //验证
-	        $validate = $this->validate($request->post(), 'app\goods\validate\SoCategory.add');
+	        $validate = $this->validate($request->post(), 'app\setting\validate\SysFocus.add');
 	        if (true !== $validate) {
 	            return $this->result('',0,$validate);
 	        }
@@ -43,12 +42,12 @@ class Category extends Admin
     	return $this->fetch('add');
     }
 
-    //编辑分类
+    //编辑
     public function edit(Request $request)
     {
     	if ($request->isAjax()){
 	        //验证
-	        $validate = $this->validate($request->post(), 'app\goods\validate\SoCategory.edit');
+	        $validate = $this->validate($request->post(), 'app\setting\validate\SysFocus.edit');
 	        if (true !== $validate) {
 	            return $this->result('',0,$validate);
 	        }
@@ -61,8 +60,23 @@ class Category extends Admin
     	return $this->fetch('edit');
     }
 
+    //设置状态
+    public function set_status(Request $request)
+    {
+        //验证
+        $validate = $this->validate($request->post(), 'app\setting\validate\SysFocus.set_status');
+        if (true !== $validate) {
+            return $this->result('',0,$validate);
+        }
+        $result = $this->service->set_status($request->post());
+        if ($result === false){
+            return $this->result('',0,$this->service->getError());
+        }
+        return $this->result($result,200,'操作成功');
+    }
+
     /**
-     * 删除分类
+     * 删除
      */
     public function delete(Request $request)
     {

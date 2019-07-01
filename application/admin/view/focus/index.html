@@ -4,7 +4,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>经销商管理</title>
+  <title>焦点图管理</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -15,41 +15,16 @@
 
   <div class="layui-fluid">
     <div class="layui-card">
-      <div class="layui-form layui-card-header layuiadmin-card-header-auto">
-        <div class="layui-form-item">
-          <div class="layui-inline">
-            <label class="layui-form-label">用户名</label>
-            <div class="layui-input-block">
-              <input type="text" name="username" placeholder="请输入" autocomplete="off" class="layui-input">
-            </div>
-          </div>
-          <div class="layui-inline">
-            <label class="layui-form-label">手机号</label>
-            <div class="layui-input-block">
-              <input type="text" name="mobile" placeholder="请输入" autocomplete="off" class="layui-input">
-            </div>
-          </div>
-          <div class="layui-inline">
-            <label class="layui-form-label">邮箱</label>
-            <div class="layui-input-block">
-              <input type="text" name="email" placeholder="请输入" autocomplete="off" class="layui-input">
-            </div>
-          </div>
-          <div class="layui-inline">
-            <button class="layui-btn layuiadmin-btn-useradmin" lay-submit lay-filter="LAY-custom-front-search">
-              <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-      
       <div class="layui-card-body">
         <div style="padding-bottom: 10px;">
           <button class="layui-btn layuiadmin-btn-useradmin" data-type="add">添加</button>
         </div>
         
-        <table id="LAY-custom-manage" lay-filter="LAY-custom-manage"></table>
-        <script type="text/html" id="table-custom">
+        <table id="LAY-focus-manage" lay-filter="LAY-focus-manage"></table>
+        <script type="text/html" id="imgTpl"> 
+          <a href={{ d.img }} target="_blank"><img style="display: inline-block; width: 50%; height: 100%;" src= {{ d.img }}></a>
+        </script>
+        <script type="text/html" id="table-focus">
           <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
           <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete"><i class="layui-icon layui-icon-delete"></i>删除</a>
         </script>
@@ -68,19 +43,19 @@
     base: '/admin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
-  }).use(['index', 'custom/custom', 'table'], function(){ //此处的custom/custom是指public/admin/modules/custom/custom.js
+  }).use(['index', 'setting/focus', 'table'], function(){
     var $ = layui.$
     ,form = layui.form
     ,table = layui.table;
     
     //监听搜索
-    form.on('submit(LAY-custom-front-search)', function(data){
-      var field = data.field;
-      //执行重载
-      table.reload('LAY-custom-manage', {
-        where: field
-      });
-    });
+    // form.on('submit(LAY-focus-front-search)', function(data){
+    //   var field = data.field;
+    //   //执行重载
+    //   table.reload('LAY-focus-manage', {
+    //     where: field
+    //   });
+    // });
 
     //监听启用禁用操作
     form.on('switch(switch-status)', function(obj){
@@ -88,7 +63,7 @@
       var json = JSON.parse(decodeURIComponent($(this).data('json')));
       //提交 Ajax 成功后，静态更新表格中的数据
       $.ajax({
-        url: '/admin/custom/set_status',
+        url: '/admin/focus/set_status',
         type: "POST",
         data: {"id":json.id,"status":status},
         dataType: 'json',
@@ -107,7 +82,7 @@
               ,icon: 1
               ,time: 1000
             }, function(){
-              table.reload('LAY-custom-manage'); //数据刷新
+              table.reload('LAY-focus-manage'); //数据刷新
             });
           }
           return false;
@@ -120,14 +95,14 @@
       add: function(){
         layer.open({
           type: 2
-          ,title: '添加经销商'
-          ,content: '/admin/custom/add'
+          ,title: '添加焦点图'
+          ,content: '/admin/focus/add'
           ,maxmin: true
-          ,area: ['600px', '650px']
+          ,area: ['600px', '450px']
           ,btn: ['确定', '取消']
           ,yes: function(index, layero){
             var iframeWindow = window['layui-layer-iframe'+ index]
-            ,submitID = 'LAY-custom-front-submit'
+            ,submitID = 'LAY-focus-front-submit'
             ,submit = layero.find('iframe').contents().find('#'+ submitID);
 
             //监听提交
@@ -136,7 +111,7 @@
               
               //提交 Ajax 成功后，静态更新表格中的数据
               $.ajax({
-                url: '/admin/custom/add',
+                url: '/admin/focus/add',
                 type: "POST",
                 data: field,
                 dataType: 'json',
@@ -155,7 +130,7 @@
                       ,icon: 1
                       ,time: 1000
                     }, function(){
-                      table.reload('LAY-custom-manage'); //数据刷新
+                      table.reload('LAY-focus-manage'); //数据刷新
                       layer.close(index); //关闭弹层
                     });
                   }
