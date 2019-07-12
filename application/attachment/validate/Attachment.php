@@ -1,14 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
 <?php
 namespace app\attachment\validate;
 
@@ -29,10 +18,3 @@ class Attachment extends Validate
     ];
 
 }
-
-
-
-
-
-
-

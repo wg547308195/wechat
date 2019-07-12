@@ -29,6 +29,9 @@ class SoUser extends Service
         if (isset($maps['id'])) {
             $model = $model->where('id','=',$maps['id']);
         }
+        if (isset($maps['custom_id'])) {
+            $model = $model->where('custom_id','=',$maps['custom_id']);
+        }
         if (!empty($maps['nickname'])){
             $model = $model->where('nickname','like','%'.$maps['nickname'].'%');
         }
@@ -131,6 +134,35 @@ class SoUser extends Service
     }
 
     /**
+     * 编辑
+     * @param array  $data        用户信息
+     * @param string $id  用户id
+     * @return mixed
+     */
+    public function save($data = [], $id = '') {
+        $model = model('user/so_user');
+        if (empty($data)) {
+            $this->error = '用户信息不能为空';
+            return false;
+        }
+        $user = $model->where('id','=',$id)->find();
+        if (empty($user->id)) {
+            $this->error = '用户不存在';
+            return false;
+        }
+        Db::startTrans();
+        try {
+            $user->isUpdate(true)->save($data);
+        } catch (\Exception $e) {
+            $this->error = $e->getMessage();
+            Db::rollback();
+            return false;
+        }
+        Db::commit();
+        return $user;
+    }
+
+    /**
      * 用户注册
      * @param string  $params[openid]    用户openid
      * @param string  $params[custom_id] 经销商id
@@ -224,8 +256,9 @@ class SoUser extends Service
         $user_auth = cookie('user_auth');
         if ($user_auth) {
             $user_auth = json_decode(decrypt($user_auth), true);
-            $user = model('user/so_user')->where('id','=',$user_auth['id'])->find();
+            $user = model('user/so_user')->where('id','=',$user_auth['id'])->relation(['custom'])->find();
         }
+        // $user = model('user/so_user')->where('id','=',20)->relation(['custom'])->find();
         return $user;
     }
 

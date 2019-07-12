@@ -23,14 +23,20 @@ class SoUserOrder extends Service
      */
     public function lists($maps = '', $order = '', $page = 0, $limit = 12, $field = true, $relations = [], $attrs =[]) {
         $model = model('user/SoUserOrder');
-        if (isset($maps['uid'])) {
+        if (!empty($maps['uid'])) {
             $model = $model->where('uid','=',$maps['uid']);
         }
-        if (isset($maps['goods_id'])) {
-            $model = $model->where('goods_id','=',$maps['goods_id']);
+        if (!empty($maps['user_goods_id'])) {
+            $model = $model->where('user_goods_id','=',$maps['user_goods_id']);
         }
         if (isset($maps['status'])) {
             $model = $model->where('status','=',$maps['status']);
+        }
+        if (!empty($maps['custom_id']) && empty($maps['uid'])){
+            $user_ids = model('user/so_user')->where('custom_id','=',$maps['custom_id'])->column('id');
+            if (!empty($user_ids)){
+                $model = $model->where('uid','in',$user_ids);
+            }
         }
         $model = $model->order($order)->field($field);
 
@@ -102,6 +108,20 @@ class SoUserOrder extends Service
         $model = model('user/SoUserOrder');
         if (empty($params)){
             $this->error = '维保单信息不能为空';
+            return false;
+        }
+        $user_goods = model('user/SoUserGoods','service')->detail(['id'=>$params['user_goods_id']]);
+        if (empty($user_goods)){
+            $this->error = '要维保的产品不存在';
+            return false;
+        }
+        if (strtotime($user_goods['end_time']) < time()){
+            $this->error = '该产品已过保修期';
+            return false;
+        }
+        $user_order = $model->where('uid','=',$params['uid'])->where('user_goods_id','=',$params['user_goods_id'])->where('status','=',0)->find();
+        if (!empty($user_order->id)){
+            $this->error = '该产品正在维保中';
             return false;
         }
         Db::startTrans();

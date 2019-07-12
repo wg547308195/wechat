@@ -69,8 +69,8 @@ class SoGoods extends Service
      */
     public function detail($maps = '',$field = true,$relations = [],$attrs = []){
         $model = model('goods/SoGoods');
-        if (!empty($maps['goods_id'])){
-            $model = $model->where('goods_id', '=', $maps['goods_id']);
+        if (!empty($maps['id'])){
+            $model = $model->where('id', '=', $maps['id']);
         }
 
         $result = $model->field($field)->relation($relations)->find();
@@ -97,7 +97,6 @@ class SoGoods extends Service
      */
     public function create($params = []) {
         $model = model('goods/SoGoods');
-        $params['goods_id'] = $this->_build_goods_id();
         Db::startTrans();
         try{
             $model->isUpdate(false)->save($params);
@@ -112,14 +111,14 @@ class SoGoods extends Service
 
     /**
      * 编辑
-     * @param int $goods_id 产品goods_id
+     * @param int $id 产品id
      * @param array $params 产品相关信息
      * @return mixed
      */
-    public function save($params = [], $goods_id = '') {
+    public function save($params = [], $id = 0) {
         $model = model('goods/SoGoods');
-        $info = $model->where('goods_id','=',$goods_id)->find();
-        if (empty($info->goods_id)) {
+        $info = $model->where('id','=',$id)->find();
+        if (empty($info->id)) {
             $this->error = '产品信息未找到';
             return false;
         }
@@ -137,23 +136,23 @@ class SoGoods extends Service
 
     /**
      * 软删除
-     * @param int $goods_id 产品goods_id
+     * @param int $id 产品id
      * @return mixed
      */
-    public function destroy($goods_id = '') {
+    public function destroy($id = 0) {
         $model = model('goods/SoGoods');
-        if (empty($goods_id)) {
+        if (empty($id)) {
             $this->error = '要删除的产品信息不能为空';
             return false;
         }
-        $info = $model->where('goods_id','=',$goods_id)->find();
+        $info = $model->where('id','=',$id)->find();
         if (!$info) {
             $this->error = '产品信息未找到';
             return false;
         }
         Db::startTrans();
         try {
-            $model->destroy(['goods_id' => $goods_id]);
+            $model->destroy(['id' => $id]);
         } catch (\Exception $e) {
             $this->error = $e->getMessage();
             Db::rollback();
@@ -162,17 +161,4 @@ class SoGoods extends Service
         Db::commit();
         return $info;
     }
-
-    /**
-     * 根据日期生成唯一goods_id
-     * @param boolean $refresh  是否刷新再生成
-     * @return string
-     */
-    public function _build_goods_id($flag = '') 
-    {
-        $uniqid = implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))).rand(10,99);
-        $num = strlen($uniqid);
-        return $flag.date('YmdHis').substr($uniqid, $num-6, $num);
-    }
-
 }

@@ -11,7 +11,7 @@
  	 * @var [type]
  	 */
  	protected $rule = [
- 		'goods_id|产品信息' => 'require|max:30',
+ 		'id|产品' => 'require|max:30',
  		'name|产品名称' => 'require|max:50',
  		'cat_id|产品分类' => 'require|number|max:10',
  		'img|产品图片' => 'require|max:255',
@@ -27,7 +27,7 @@
  	 */
  	protected $scene =[
  		'add' => ['name','cat_id','img','desc','performance','time_length','status'],
- 		'edit' => ['goods_id','name','cat_id','img','desc','performance','status'],
+ 		'edit' => ['id','name','cat_id','img','desc','performance','status'],
  	];
 
  }

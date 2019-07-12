@@ -37,7 +37,7 @@ class Sms extends Service
      */
     public function send_one($mobile, $tpl_id, $params = [], $is_valid = 0) {
         if (empty($mobile)){
-            $this->error = '短信发送对象不能为空';
+            $this->error = '手机号不能为空';
             return false;
         }
         $tpl = model('message/sms_template')->where('template_id','=',$tpl_id)->find();

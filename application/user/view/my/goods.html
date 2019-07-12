@@ -1,0 +1,452 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>我的产品</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="/template/css/mui.css" rel="stylesheet" />
+		<link href="/template/iconfont/iconfont.css" rel='stylesheet' />
+		<link rel="stylesheet" type="text/css" href="/template/css/mui.picker.min.css" />
+		<script src="/template/js/mui.js"></script>
+		<script src="/template/js/mui.picker.min.js"></script>
+		<style type="text/css">
+			body {
+				background-color: white;
+			}
+
+			.baseinfo {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				padding: 40px 0 20px;
+				align-items: center;
+			}
+
+			.baseinfo img {
+				width: 30vw;
+				height: 30vw;
+			}
+
+			.baseinfo span {
+				letter-spacing: 1px;
+				color: #000000a1
+			}
+
+			.baseinfo span.name {
+				color: #000000;
+				margin: 3px 0;
+				font-weight: bold;
+				font-size: calc(1rem + 4px);
+				letter-spacing: 2px;
+			}
+
+			.card {
+				margin: 0 5vw 20px;
+				border-radius: 6px;
+				overflow: hidden;
+				box-shadow: 0 0 4px rgba(0, 0, 0, .1);
+				position: relative;
+			}
+
+			.goodslistItem {
+				display: flex;
+				padding: 10px;
+				/* padding-right: 25px; */
+				position: relative;
+				justify-content: space-between;
+				border-bottom: 1px solid rgba(0, 0, 0, .1);
+			}
+			.goodslistItem:active{
+				background-color: rgba(0, 0, 0, .05);
+			}
+
+			.card .goodslistItem:last-child {
+				border-bottom: none;
+			}
+
+			.newmessagedot {
+				position: absolute;
+				top: 10px;
+				right: calc(1rem + 10px);
+			}
+
+			.normalCard {
+				padding: 5px 25px 5px 10px;
+			}
+
+			.normalCard>div {
+				margin: 5px 0;
+				font-size: calc(1rem - 2px);
+				display: flex;
+			}
+
+			.overflowspan {
+				flex-grow: 1;
+				flex-shrink: 1;
+				color: #000000d9;
+			}
+
+			.unoverflowspan {
+				flex-grow: 0;
+				flex-shrink: 0;
+			}
+
+			.popovercontent {
+				width: 80vw;
+				background-color: white;
+				position: fixed;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+			}
+
+			.adddsupplybutton {
+				width: 90vw;
+				margin: 10px 5vw;
+				height: 2rem;
+				border-radius: 4px;
+				box-shadow: 0 0 2px rgba(0, 0, 0, .2);
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				padding: 0
+			}
+
+			.addproductbutton {
+				width: 90vw;
+				margin: 10px 5vw;
+				height: 2rem;
+				border-radius: 0.9rem;
+				box-shadow: 0 0 4px rgba(0, 0, 0, .2);
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				padding: 0
+			}
+			input::-moz-placeholder{
+				font-size: calc(1rem - 2px);
+				color: #C7C7CC;
+			}
+			
+			input::-ms-input-placeholder {
+				font-size: calc(1rem - 2px);
+				color: #C7C7CC;
+			
+			}
+			
+			input::-webkit-input-placeholder {
+				font-size: calc(1rem - 2px);
+				color: #C7C7CC;
+			
+			}
+			
+			textarea::-moz-placeholder {
+				font-size: calc(1rem - 2px);
+				width: 100%;
+				color: #C7C7CC;
+				border-bottom: 1px solid rgba(0,0,0,.2);
+			}
+			
+			textarea::-ms-input-placeholder {
+				font-size: calc(1rem - 2px);
+				border-bottom: 1px solid rgba(0,0,0,.2);
+				color: #C7C7CC;
+				width: 100%
+			}
+			
+			textarea::-webkit-input-placeholder {
+				font-size: calc(1rem - 2px);
+				color: #C7C7CC;
+				border-bottom: 1px solid rgba(0,0,0,.2);
+				width: 100%
+			}
+			.ownslider {
+				position: relative;
+				overflow: hidden;
+				width: 100vw;
+				margin-bottom: 20px;
+			}
+			
+			.ownslider-group {
+				display: flex;
+				flex-wrap: nowrap;
+				transition-duration: 1s;
+			}
+			
+			.ownslider-item {
+				flex-grow: 0;
+				flex-shrink: 0;
+				width: 100vw;
+				padding: 0 2.5vw;
+			}
+			
+			.ownslider-indicator {
+				background-color: rgba(0, 0, 0, .07);
+				position: absolute;
+				bottom: 0;
+				padding: 2.5vw;
+				display: flex;
+				justify-content: space-between;
+				font-size: calc(1rem - 4px);
+				width: 100vw;
+			}
+			
+			.ownslider-indicator>div:first-child {
+				flex-grow: 1;
+				flex-shrink: 1;
+				text-align: center;
+				height: 1rem;
+				padding: 0
+			}
+			
+			.dots {
+				display: flex;
+				justify-content: center;
+				flex-grow: 0;
+				flex-shrink: 0;
+				flex-wrap: nowrap;
+			}
+			
+			.dotsitem {
+				width: 10px;
+				height: 10px;
+				border-radius: 5px;
+				overflow: hidden;
+				background: white;
+				margin: 0 2px;
+			}
+			.picturesdesc {
+				display: none;
+			}
+
+			.sliderpicture {
+				max-height: calc(100vh - 40vw - 68px - 30vh);
+				width: 100%;
+			}
+
+			.footer {
+				background-color: white;
+				position: fixed;
+				bottom: 0;
+				height: 59px;
+				display: flex;
+				border-top: 1px solid rgba(0, 0, 0, .2);
+			}
+
+			.footer>div {
+				display: flex;
+				width: 50vw;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				font-size: 14px;
+			}
+
+			.footer>div:first-child {
+				color: #6eb92b
+			}
+
+			.footer>div img {
+				height: 35px;
+
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="slider" class="ownslider">
+			<div class="ownslider-group">
+				<?php foreach ($focus as $info) { ?>
+				<div class="ownslider-item">
+					<a href="{$info['link']}">
+						<img class="sliderpicture" alt="{$info['name']}" src="{$info['img']}" />
+					</a>
+				</div>
+				<?php } ?>
+			</div>
+			<div class="ownslider-indicator">
+				<div>
+					<?php foreach ($focus as $info) { ?>
+					<span class="picturesdesc">{$info['name']}</span>
+					<?php } ?>
+				</div>
+				<div class="dots">
+					<?php foreach ($focus as $info) { ?>
+					<div class="dotsitem"></div>
+					<?php } ?>
+				</div>
+			</div>
+		</div>
+		<div>
+			<button id='addproductbuttonid' class="iconfont addproductbutton"><span style="color: #2AC845;display: inline-block;margin-right: 5px;font-size: 1rem;">&#xe6a5;</span>添加产品</button>
+		</div>
+		<div id="confirmPopover" class="mui-popover">
+			<div class="popovercontent" style="border-radius:6px;overflow: hidden;">
+				<p id='confirmGoodsName' style="text-align: center;color: #000000;font-weight: bold;font-size: 1rem;padding: 20px;"></p>
+				<p style="text-align: center;color: #000000;font-size: 0.8rem;padding: 0 20px 10px;">确认添加吗？</p>
+				<div style="display: flex;border-top: 1px solid #BBBBBB;height: 2rem;">
+					<button id='confirmAddButton' style="border: none;width: calc(50% - 2px);border-right:1px solid #BBBBBB;border-radius: 0;">确定</button>
+					<button id='confirmCancelButton' style="border: none;width: calc(50% - 2px);">取消</button>
+				</div>
+			</div>
+		</div>
+		<div class="card">
+			<?php if(count($user_goods) > 0){ ?>
+			<?php foreach($user_goods as $key=>$goods){ ?>
+			<div class="goodslistItem" onclick="goods_detail({$goods['id']},this)">
+				<div>
+					{$goods['goods']['name']}
+				</div>
+				<div>
+					<span style="display:inline-block;text-align: right;margin-right: 10px;">{$goods['surplus_time']}天</span>
+					<span class="iconfont" style="display:inline-block;width: 1rem;text-align: right;">&#xe659;</span>
+				</div>
+				<?php if ($goods['_red_circle'] == 1){ ?>
+				<svg class="newmessagedot" width="10px" heigh='10px'>
+					<circle cx='5' cy='5' r='5' fill='red'></circle>
+				</svg>
+				<?php } ?>
+			</div>
+			<?php } ?>
+			<?php }else{ ?>
+			<div class="goodslistItem" style="justify-content: center;padding: 20px 0 20px;align-items: center;">
+				暂无产品
+			</div>
+			<?php } ?>
+		</div>
+		
+		<div style="height: 70px;"></div>
+		{include file="common/footer" /}
+		
+		<script type="text/javascript">
+			function setRem() {
+				document.documentElement.style.fontSize = document.documentElement.clientWidth / 20 + 'px';
+			}
+			setRem();
+			window.addEventListener('resize', setRem);
+			mui.init()
+
+			mui('.mui-scroll-wrapper').scroll();
+			mui('body').on('shown', '.mui-popover', function(e) {});
+			mui('body').on('hidden', '.mui-popover', function(e) {});
+			mui('.normalCard').on('tap', '.mui-btn-success', function() {
+				window.location.hash = '#middlePopover'
+			})
+			
+
+			mui.ready(function() {
+				var userPicker = new mui.PopPicker();
+				mui.getJSON("<?php echo url('user/my/get_goods') ?>",{},function(ret){
+					if (ret.code == 200){
+						userPicker.setData(ret.data);
+					}
+				});
+				var showUserPickerButton = document.getElementById('addproductbuttonid');
+				var addGoodsResult;
+				var confirmGoodsName = document.getElementById('confirmGoodsName');
+				var confirmAddButton = document.getElementById('confirmAddButton');
+				var confirmCancelButton = document.getElementById('confirmCancelButton');
+
+				var confirmPopover = mui('#confirmPopover');
+				confirmCancelButton.addEventListener('tap', function() {
+					addGoodsResult = '';
+					confirmPopover.popover("toggle");
+				})
+				confirmAddButton.addEventListener('tap', function() {
+					var goods_id = addGoodsResult;
+					mui.ajax('/user/my/add_goods', 
+		          	{         
+		              data:{
+						'goods_id':goods_id
+					  },
+		              type:'POST',//HTTP请求类型 
+		              dataType:'json',//服务器返回json格式数据 
+		              timeout:10000,//超时时间设置为10秒； 
+		              headers:{'Content-Type':'application/json'},          
+		              success:function(ret) 
+		              { 
+		                if(ret.code == 200) 
+		                { 
+		                  	mui.alert(ret.msg);
+		                  	setInterval(function(){
+		                  		location.reload();
+		                  	},1000);
+		                }else 
+		                { 
+		                  	mui.alert(ret.msg);
+		                  	return false;
+		                } 
+		              }, 
+		              error:function(xhr,type,errorThrown) 
+		              { 
+		                //异常处理；                
+		                mui.alert(type); 
+		                console.log(type); 
+		              } 
+		          	});
+					confirmPopover.popover("toggle");
+				})
+				showUserPickerButton.addEventListener('tap', function(event) {
+					userPicker.show(function(items) {
+						confirmGoodsName.innerText = items[0].text;
+						addGoodsResult = items[0].value;
+						confirmPopover.popover("toggle");
+					});
+				}, false);
+				//轮播图
+				var ownslider = mui('.ownslider')[0];
+				var sildergroup = mui('.ownslider-group')[0];
+				var silderitems = mui('.ownslider-item');
+				var dotsitems = mui('.dotsitem');
+				var picturesdescs = mui('.picturesdesc');
+				var offsetLeft = 0;
+				var total = silderitems && silderitems.length || 0;
+				var current = 0;
+				var direction = false;
+				dotsitems[current].style.backgroundColor = 'rgba(0,0,0,.4)';
+				picturesdescs[current].style.display = 'inline';
+				var pictureinterval = setInterval(function() {
+					dotsitems[current].style.backgroundColor = 'white';
+					picturesdescs[current].style.display = 'none';
+					if (current === 0) {
+						direction = true;
+					};
+					if (current === (total - 1)) {
+						direction = false;
+					}
+					if (direction) {
+						current++;
+					} else {
+						current--;
+					}
+					dotsitems[current].style.backgroundColor = 'rgba(0,0,0,.4)';
+					picturesdescs[current].style.display = 'inline';
+					sildergroup.style.transform = 'translate3d(-' + (current * 100) + 'vw,0px,0px)';
+				}, 5000)
+				mui('.ownslider').on('swipeleft', '.ownslider-group', function() {
+					if (current >= (total - 1)) return;
+					dotsitems[current].style.backgroundColor = 'white';
+					picturesdescs[current].style.display = 'none';
+					current++;
+					dotsitems[current].style.backgroundColor = 'rgba(0,0,0,.4)';
+					picturesdescs[current].style.display = 'inline';
+					sildergroup.style.transform = 'translate3d(-' + (current * 100) + 'vw,0px,0px)';
+				})
+				mui('.ownslider').on('swiperight', '.ownslider-group', function() {
+					if (current === 0) return;
+					dotsitems[current].style.backgroundColor = 'white';
+					picturesdescs[current].style.display = 'none';
+					current--;
+					dotsitems[current].style.backgroundColor = 'rgba(0,0,0,.4)';
+					picturesdescs[current].style.display = 'inline';
+					sildergroup.style.transform = 'translate3d(-' + (current * 100) + 'vw,0px,0px)';
+				})
+			})
+			function goods_detail(id,obj){
+	        	mui.openWindow("/user/my/goods_detail?id="+id)
+	        }
+		</script>
+	</body>
+
+</html>

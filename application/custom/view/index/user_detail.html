@@ -1,0 +1,185 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>客户详情</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="/template/css/mui.css" rel="stylesheet" />
+		<link href="/template/iconfont/iconfont.css" rel='stylesheet' />
+		<link rel="stylesheet" type="text/css" href="/template/css/mui.picker.min.css" />
+		<style type="text/css">
+			body {
+				background-color: white;
+			}
+
+			.baseinfo {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				padding: 40px 0 20px;
+				align-items: center;
+			}
+
+			.baseinfo img {
+				width: 30vw;
+				height: 30vw;
+			}
+
+			.baseinfo span {
+				letter-spacing: 1px;
+				color: #000000a1
+			}
+
+			.baseinfo span.name {
+				color: #000000;
+				margin: 3px 0;
+				font-weight: bold;
+				font-size: calc(1rem + 4px);
+				letter-spacing: 2px;
+			}
+
+			.card {
+				margin: 0 5vw 20px;
+				border-radius: 6px;
+				overflow: hidden;
+				box-shadow: 0 0 4px rgba(0, 0, 0, .1);
+				position: relative;
+			}
+
+			.goodslistItem {
+				display: flex;
+				padding: 10px;
+				/* padding-right: 25px; */
+				position: relative;
+				justify-content: space-between;
+				border-bottom: 1px solid rgba(0, 0, 0, .1);
+			}
+			.goodslistItem:active{
+				background-color: rgba(0, 0, 0, .05);
+			}
+
+			.card .goodslistItem:last-child {
+				border-bottom: none;
+			}
+
+			.newmessagedot {
+				position: absolute;
+				top: 10px;
+				right: calc(1rem + 10px);
+			}
+
+			.normalCard {
+				padding: 5px 25px 5px 10px;
+			}
+
+			.normalCard>div {
+				margin: 5px 0;
+				font-size: calc(1rem - 2px);
+				display: flex;
+			}
+
+			.overflowspan {
+				flex-grow: 1;
+				flex-shrink: 1;
+				color: #000000d9;
+			}
+
+			.unoverflowspan {
+				flex-grow: 0;
+				flex-shrink: 0;
+			}
+
+			.popovercontent {
+				width: 80vw;
+				background-color: white;
+				position: fixed;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+			}
+
+			input::-moz-placeholder{
+				font-size: calc(1rem - 2px);
+				color: #C7C7CC;
+			}
+
+			input::-ms-input-placeholder {
+				font-size: calc(1rem - 2px);
+				color: #C7C7CC;
+
+			}
+
+			input::-webkit-input-placeholder {
+				font-size: calc(1rem - 2px);
+				color: #C7C7CC;
+
+			}
+
+			textarea::-moz-placeholder {
+				font-size: calc(1rem - 2px);
+				width: 100%;
+				color: #C7C7CC;
+				border-bottom: 1px solid rgba(0,0,0,.2);
+			}
+
+			textarea::-ms-input-placeholder {
+				font-size: calc(1rem - 2px);
+				border-bottom: 1px solid rgba(0,0,0,.2);
+				color: #C7C7CC;
+				width: 100%
+			}
+
+			textarea::-webkit-input-placeholder {
+				font-size: calc(1rem - 2px);
+				color: #C7C7CC;
+				border-bottom: 1px solid rgba(0,0,0,.2);
+				width: 100%
+			}
+		</style>
+	</head>
+
+	<body>
+		<header id="header" class="mui-bar mui-bar-transparent">
+			<a href="<?php echo url('/custom/index/user') ?>" class="mui-icon mui-icon-left-nav mui-pull-left"></a>
+		</header>
+		<div class="baseinfo">
+			<img src="{$user['headimgurl']}" />
+			<span class="name">{$user['realname']}</span>
+			<span>{$user['mobile']}</span>
+			<span>{$user['address']}</span>
+		</div>
+		<div class="card">
+			<?php if(count($user_goods) > 0){ ?>
+			<?php foreach($user_goods as $key=>$goods){ ?>
+			<div class="goodslistItem" onclick="goods_detail({$goods['id']},{$user['id']},this)">
+				<div>
+					{$goods['goods']['name']}
+				</div>
+				<div>
+					<span style="display:inline-block;text-align: right;margin-right: 10px;">{$goods['surplus_time']}天</span>
+					<span class="iconfont" style="display:inline-block;width: 1rem;text-align: right;">&#xe659;</span>
+				</div>
+				<?php if ($goods['_red_circle'] == 1){ ?>
+				<svg class="newmessagedot" width="10px" heigh='10px'>
+					<circle cx='5' cy='5' r='5' fill='red'></circle>
+				</svg>
+				<?php } ?>
+			</div>
+			<?php } ?>
+			<?php }else{ ?>
+			<div class="goodslistItem" style="justify-content: center;padding: 20px 0 20px;align-items: center;">
+				暂无产品
+			</div>
+			<?php } ?>
+		</div>
+		<script src="/template/js/mui.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			function goods_detail(id,uid,obj){
+	        	mui.openWindow("/custom/index/goods_detail?id="+id+"&uid="+uid)
+	        }
+		</script>
+	</body>
+
+</html>

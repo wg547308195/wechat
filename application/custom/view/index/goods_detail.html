@@ -1,0 +1,414 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>客户详情</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="/template/css/mui.css" rel="stylesheet" />
+		<link href="/template/iconfont/iconfont.css" rel='stylesheet' />
+		<link rel="stylesheet" type="text/css" href="/template/css/mui.picker.min.css" />
+		<style type="text/css">
+			body {
+				background-color: white;
+			}
+
+			.baseinfo {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				padding: 40px 0 20px;
+				align-items: center;
+			}
+
+			.baseinfo img {
+				width: 30vw;
+				height: 30vw;
+			}
+
+			.baseinfo span {
+				letter-spacing: 1px;
+				color: #000000a1
+			}
+
+			.baseinfo span.name {
+				color: #000000;
+				margin: 3px 0;
+				font-weight: bold;
+				font-size: calc(1rem + 4px);
+				letter-spacing: 2px;
+			}
+
+			.card {
+				margin: 0 5vw 20px;
+				border-radius: 6px;
+				overflow: hidden;
+				box-shadow: 0 0 4px rgba(0, 0, 0, .1);
+				position: relative;
+			}
+
+			.goodslistItem {
+				display: flex;
+				padding: 10px;
+				padding-right: 25px;
+				position: relative;
+				justify-content: space-between;
+			}
+
+			.activeitem {
+				background-color: rgba(0, 0, 0, .05);
+			}
+
+			.newmessagedot {
+				position: absolute;
+				top: 10px;
+				right: 6px;
+			}
+
+			.normalCard {
+				padding: 5px 25px 5px 10px;
+			}
+
+			.normalCard>div {
+				margin: 5px 0;
+				font-size: calc(1rem - 2px);
+				display: flex;
+			}
+
+			.overflowspan {
+				flex-grow: 1;
+				flex-shrink: 1;
+				color: #000000d9;
+			}
+
+			.unoverflowspan {
+				flex-grow: 0;
+				flex-shrink: 0;
+			}
+
+			.popovercontent {
+				width: 80vw;
+				background-color: white;
+				position: fixed;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+			}
+
+			input::-moz-placeholder{
+				font-size: calc(1rem - 2px);
+				color: #C7C7CC;
+			}
+
+			input::-ms-input-placeholder {
+				font-size: calc(1rem - 2px);
+				color: #C7C7CC;
+
+			}
+
+			input::-webkit-input-placeholder {
+				font-size: calc(1rem - 2px);
+				color: #C7C7CC;
+
+			}
+
+			textarea::-moz-placeholder {
+				font-size: calc(1rem - 2px);
+				width: 100%;
+				color: #C7C7CC;
+				border-bottom: 1px solid rgba(0,0,0,.2);
+			}
+
+			textarea::-ms-input-placeholder {
+				font-size: calc(1rem - 2px);
+				border-bottom: 1px solid rgba(0,0,0,.2);
+				color: #C7C7CC;
+				width: 100%
+			}
+
+			textarea::-webkit-input-placeholder {
+				font-size: calc(1rem - 2px);
+				color: #C7C7CC;
+				border-bottom: 1px solid rgba(0,0,0,.2);
+				width: 100%
+			}
+		</style>
+	</head>
+
+	<body>
+		<header id="header" class="mui-bar mui-bar-transparent">
+			<a href="<?php echo url('/custom/index/user_detail',['id'=>$_GET['uid']]) ?>" class="mui-icon mui-icon-left-nav mui-pull-left"></a>
+		</header>
+		<div class="card normalCard" style="margin-top: 50px;">
+			<div>
+				产品名称：{$user_goods['goods']['name']}
+			</div>
+			<div>
+				购买日期：{:date('Y-m-d',strtotime($user_goods['create_time']))}
+			</div>
+			<div>
+				<span>保修期限：{:date('Y-m-d',strtotime($user_goods['end_time']))}</span>
+				<span style="color: #000000a1;">(剩余{$user_goods['surplus_time']}天)</span>
+			</div>
+		</div>
+		<?php if (count($user_orders) > 0) { ?>
+		<?php foreach($user_orders as $info){ ?>
+		<div class="card normalCard">
+			<div>
+				<span class="unoverflowspan">维保描述：</span>
+				<span class="overflowspan">{$info['desc']}</span>
+			</div>
+			<div>
+				<span class="unoverflowspan">申请时间：</span>
+				<span class="overflowspan">{:date('Y-m-d',strtotime($info['create_time']))}</span>
+			</div>
+			<?php if ($info['status'] == 0){ ?>
+			<div style="display: flex;justify-content: center;">
+				<button data-id="{$info['id']}" style="margin:0 10px" type="button" class="mui-btn checkrefuse">拒绝</button>
+				<button data-id="{$info['id']}" style="margin:0 10px" type="button" class="mui-btn mui-btn-success checkweibao">维保</button>
+			</div>
+			<svg class="newmessagedot" width="10px" heigh='10px'>
+				<circle cx='5' cy='5' r='5' fill='red'></circle>
+			</svg>
+			<?php }else{ ?>
+			<div>
+				<span class="unoverflowspan">处理时间：</span>
+				<span class="overflowspan">{$info['handle_time']}</span>
+			</div>
+			<div>
+				<span class="unoverflowspan">备注信息：</span>
+				<span class="overflowspan">{$info['remark'] ?: '-'}</span>
+			</div>
+			<div style="display: flex;justify-content: center;">
+				<?php if ($info['status'] == 1){ ?>
+				<span style="color: #4cd964;letter-spacing: 2px;" class="iconfont">&#xe652;已维保</span>
+				<?php }else{ ?>
+				<span style="color: #000000a1;letter-spacing: 2px;" class="iconfont">&#xe651;已拒绝</span>
+				<?php } ?>
+			</div>
+			<?php } ?>
+		</div>
+		<?php } ?>
+		<?php }else{ ?>
+		<div class="goodslistItem" style="justify-content: center;padding: 20px 0 20px;align-items: center;">
+			暂无维保记录
+		</div>
+		<?php } ?>
+		<div id="middlePopover" class="mui-popover">
+			<div class="popovercontent normalCard">
+				<div style="margin-bottom: 10px;">
+					<span class="unoverflowspan">处理时间：</span>
+					<span class="overflowspan">
+						<input placeholder="请选择处理时间" type="text" readonly="readonly" id='handle_time' style="border-radius: 0;font-size: 1rem;height: 1.2rem;line-height: 1.2rem;padding:0;border: none;border-bottom: 1px solid rgba(0,0,0,.2);background:none;text-align: left;"
+						 data-options='{"type":"date","beginYear":2018,"endYear":2099}' class="btn mui-btn mui-btn-block"></input>
+					</span>
+				</div>
+				<div>
+					<span class="unoverflowspan">备注信息：</span>
+					<span class="overflowspan">
+						<textarea style="background: none;border:none;padding:0;border-radius: 0;height: auto;" id="remark" rows="3"
+						 placeholder="请输入备注信息"></textarea>
+					</span>
+				</div>
+				<div style="display: flex;justify-content: center;">
+					<a id='checkweibao1' style="margin:0 10px" type="button" class="mui-btn mui-btn-success">维保</a>
+					<a id='checkrefuse1' style="margin:0 10px" type="button" class="mui-btn">拒绝</a>
+				</div>
+			</div>
+		</div>
+		<script src="/template/js/mui.js"></script>
+		<script src="/template/js/mui.picker.min.js"></script>
+		<script type="text/javascript">
+			(function($) {
+				$.init();
+				var btns = $('.btn');
+				var checkweibao = $('.checkweibao');
+				var checkweibao1 = $('#checkweibao1');
+				var middlePopover = $('#middlePopover');
+				var checkrefuse = $('.checkrefuse');
+				var checkrefuse1 = $('#checkrefuse1');
+
+				var handle_time = $('#handle_time');
+				var remark = $('#remark');
+				var id = 0;
+				checkweibao.each(function(i, item){
+					item.addEventListener('tap', function() {
+						id = item.getAttribute('data-id');
+						handle_time[0].innerText = '请选择处理时间';
+						remark[0].value = '';
+						checkweibao1[0].style.display = 'block';
+						checkrefuse1[0].style.display = 'none';
+						middlePopover.popover("toggle");
+					})
+				});
+				checkrefuse.each(function(i, item){
+					item.addEventListener('tap', function() {
+						id = item.getAttribute('data-id');
+						handle_time[0].innerText = '请选择处理时间';
+						remark[0].value = '';
+						checkrefuse1[0].style.display = 'block';
+						checkweibao1[0].style.display = 'none';
+						middlePopover.popover("toggle");
+					})
+				});
+				checkweibao1[0].addEventListener('tap', function() {
+					var handle_time = document.getElementById("handle_time").value;
+					var remark = document.getElementById("remark").value;
+					if (handle_time == null || handle_time == '' || handle_time == undefined){
+						$.toast('请选择处理时间！');
+	                  	return false;
+					}
+
+					$.ajax('/custom/index/check_order', 
+		          	{         
+		              data:{
+						'handle_time':handle_time,
+						'remark':remark,
+						'status':1,
+						'id':id
+					  },
+		              type:'POST',//HTTP请求类型 
+		              dataType:'json',//服务器返回json格式数据 
+		              timeout:10000,//超时时间设置为10秒； 
+		              headers:{'Content-Type':'application/json'},          
+		              success:function(ret) 
+		              { 
+		                if(ret.code == 200) 
+		                { 
+		                  	$.alert(ret.msg);
+		                  	setInterval(function(){
+		                  		location.reload();
+		                  	},1000);
+		                }else 
+		                { 
+		                  	$.alert(ret.msg);
+		                  	return false;
+		                } 
+		              }, 
+		              error:function(xhr,type,errorThrown) 
+		              { 
+		                //异常处理；                
+		                $.alert(type); 
+		                console.log(type); 
+		              } 
+		          	});
+		          	middlePopover.popover("toggle");
+				});
+				checkrefuse1[0].addEventListener('tap', function() {
+					var handle_time = document.getElementById("handle_time").value;
+					var remark = document.getElementById("remark").value;
+					if (handle_time == null || handle_time == '' || handle_time == undefined){
+						$.toast('请选择处理时间！');
+	                  	return false;
+					}
+					if (remark == null || remark == '' || remark == undefined){
+						$.toast('请填写备注！');
+	                  	return false;
+					}
+
+					$.ajax('/custom/index/check_order', 
+		          	{         
+		              data:{
+						'handle_time':handle_time,
+						'remark':remark,
+						'status':-1,
+						'id':id
+					  },
+		              type:'POST',//HTTP请求类型 
+		              dataType:'json',//服务器返回json格式数据 
+		              timeout:10000,//超时时间设置为10秒； 
+		              headers:{'Content-Type':'application/json'},          
+		              success:function(ret) 
+		              { 
+		                if(ret.code == 200) 
+		                { 
+		                  	$.alert(ret.msg);
+		                  	setInterval(function(){
+		                  		location.reload();
+		                  	},1000);
+		                }else 
+		                { 
+		                  	$.alert(ret.msg);
+		                  	return false;
+		                } 
+		              }, 
+		              error:function(xhr,type,errorThrown) 
+		              { 
+		                //异常处理；                
+		                $.alert(type); 
+		                console.log(type); 
+		              } 
+		          	});
+					middlePopover.popover("toggle");
+				});
+				btns.each(function(i, btn) {
+					btn.addEventListener('tap', function() {
+						var _self = this;
+						if (_self.picker) {
+							_self.picker.show(function(rs) {
+								btn.value = rs.text;
+								_self.picker.dispose();
+								_self.picker = null;
+							});
+						} else {
+							var optionsJson = this.getAttribute('data-options') || '{}';
+							var options = JSON.parse(optionsJson);
+							var id = this.getAttribute('id');
+							/*
+							 * 首次显示时实例化组件
+							 * 示例为了简洁，将 options 放在了按钮的 dom 上
+							 * 也可以直接通过代码声明 optinos 用于实例化 DtPicker
+							 */
+							_self.picker = new $.DtPicker(options);
+							_self.picker.show(function(rs) {
+								/*
+								 * rs.value 拼合后的 value
+								 * rs.text 拼合后的 text
+								 * rs.y 年，可以通过 rs.y.vaue 和 rs.y.text 获取值和文本
+								 * rs.m 月，用法同年
+								 * rs.d 日，用法同年
+								 * rs.h 时，用法同年
+								 * rs.i 分（minutes 的第二个字母），用法同年
+								 */
+								// result.innerText = '选择结果: ' + rs.text;
+								btn.value = rs.text;
+								/* 
+								 * 返回 false 可以阻止选择框的关闭
+								 * return false;
+								 */
+								/*
+								 * 释放组件资源，释放后将将不能再操作组件
+								 * 通常情况下，不需要示放组件，new DtPicker(options) 后，可以一直使用。
+								 * 当前示例，因为内容较多，如不进行资原释放，在某些设备上会较慢。
+								 * 所以每次用完便立即调用 dispose 进行释放，下次用时再创建新实例。
+								 */
+								_self.picker.dispose();
+								_self.picker = null;
+							});
+						}
+
+					}, false);
+				});
+			})(mui);
+
+			function setRem() {
+				document.documentElement.style.fontSize = document.documentElement.clientWidth / 20 + 'px';
+			}
+			setRem();
+			window.addEventListener('resize', setRem);
+			// mui.init()
+
+			mui('.mui-scroll-wrapper').scroll();
+			mui('body').on('shown', '.mui-popover', function(e) {
+				//console.log('shown', e.detail.id);//detail为当前popover元素
+			});
+			mui('body').on('hidden', '.mui-popover', function(e) {
+				//console.log('hidden', e.detail.id);//detail为当前popover元素
+			});
+			mui('.normalCard').on('tap', '.mui-btn-success', function() {
+				window.location.hash = '#middlePopover'
+			})
+		</script>
+	</body>
+
+</html>

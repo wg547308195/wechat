@@ -76,7 +76,7 @@ class Goods extends Admin
             if (true !== $validate) {
                 return $this->result('',0,$validate);
             }
-            $result = $this->service->save($data,$data['goods_id']);
+            $result = $this->service->save($data,$data['id']);
             if ($result === false) {
                 return $this->result('',0,$this->service->getError());
             }
@@ -92,7 +92,7 @@ class Goods extends Admin
      */
     public function delete(Request $request)
     {
-        $result = $this->service->destroy($request->post('goods_id'));
+        $result = $this->service->destroy($request->post('id'));
         if ($result === false) {
             return $this->result('',0,$this->service->getError());
         }

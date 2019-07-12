@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>注册</title>
+		<script src="/template/js/mui.min.js"></script>
+		<link href="/template/css/mui.min.css" rel="stylesheet" />
+		<link href="/template/iconfont/iconfont.css" rel="stylesheet" />
+		<link href="/template/css/mui.picker.css" rel="stylesheet" />
+		<link href="/template/css/mui.poppicker.css" rel="stylesheet" />
+		<script src="/template/js/mui.picker.js"></script>
+		<script src="/template/js/mui.poppicker.js"></script>
+		<style type="text/css">
+			body {
+				background-color: white;
+			}
+
+			.login_page {
+				margin-top: 20px;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+
+			.sysnamecn {
+				color: #6eb92b;
+				letter-spacing: 2px;
+				font-weight: 800;
+				height: 24px;
+				line-height: 24px;
+				font-size: 1rem;
+			}
+
+			.sysnameen {
+				font-size: 1rem;
+				color: #6EB92B;
+				height: 24px;
+				line-height: 24px;
+			}
+
+			.form_span {
+				margin-top: 20px;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+			}
+
+			.form_div {
+				width: 70vw;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+			}
+
+			input {
+				width: 100%;
+				border: none  !important;
+				border-radius: 0 !important;
+				border-bottom: 1px solid rgba(0, 0, 0, .3) !important;
+				letter-spacing: 1px;
+				margin-bottom: 5vh;
+			}
+
+			#password {
+				border: none;
+				border-bottom: 1px solid rgba(0, 0, 0, .3);
+				padding: 0
+			}
+
+			input:focus {
+				border-bottom: 1px solid rgba(0, 0, 0, .3);
+				outline: none;
+			}
+
+			input::placeholder {
+				color: #80808096;
+				font-size:calc(1rem - 4px);
+			}
+
+			input::-moz-placeholder {
+				color: #80808096;
+				font-size:calc(1rem - 4px);
+
+			}
+
+			input::-ms-input-placeholder {
+				color: #80808096;
+				font-size:calc(1rem - 4px);
+
+			}
+
+			input::-webkit-input-placeholder {
+				color: #80808096;
+				font-size:calc(1rem - 4px);
+
+			}
+
+			#buttonspan {
+				width: 100%;
+				height: 2rem;
+				line-height: 2rem;
+				border-radius: 1rem;
+				box-shadow: none;
+				background: none;
+				font-weight: normal;
+				border: 1px solid rgba(0, 0, 0, .1);
+				padding: 0
+			}
+
+			#buttonspan:active {
+				outline: none;
+				background-color: rgba(0, 0, 0, .05);
+			}
+
+			#buttonspan:focus {
+				outline: none;
+			}
+
+			.sliderspan {
+				height: calc(100vh - 40vw - 68px - 30vh);
+				padding-top: 10px;
+				display: flex;
+				align-items: flex-end;
+			}
+
+			.sliderpicture {
+				max-height: calc(100vh - 40vw - 68px - 30vh);
+				width: 100%;
+			}
+
+			input.tonormal {
+				border: none !important;
+				border-radius: none;
+				letter-spacing: 1px;
+				margin: 0;
+				text-align: left;
+				font-size: 1rem;
+				padding: 10px 15px;
+			}
+
+			.dropdown {
+				height: 41px;
+				width: 100%;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 15px;
+				border-bottom: 1px solid rgba(0, 0, 0, .3);
+			}
+
+			.dropdown span {
+				flex-grow: 0;
+				flex-shrink: 0;
+			}
+			.checkNumSpan {
+				margin-bottom:20px;
+				width: 100%;
+				border-bottom:  1px solid rgba(0, 0, 0, .2);
+				border-radius:3px;
+				overflow: hidden;
+				padding:0;
+				display: flex;
+				justify-content: space-between;
+				background-color: white;
+				overflow: hidden;
+				align-items: center;
+			}
+
+			.checkNumSpan input {
+				width: calc(100% - 6em);
+				border: none !important;
+				flex-grow: 1;
+				flex-shrink: 1;
+				margin: 0;
+				text-align: left;
+			}
+			.getCheckNum {
+				height: calc(1rem + 6px);
+				padding:0 2px;
+				background-color: #007aff;
+				color: white;
+				width: 6em;
+				flex-grow:0;
+				flex-shrink: 0;
+			}
+			.checkNum{
+				height: calc(1rem + 6px);
+				padding:0 2px;
+				color: black;
+				flex-grow:0;
+				flex-shrink: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="login_page">
+			<img style="width: 40vw;height: 40vw;" src="/template/pictures/logo.png" />
+			<span class="sysnamecn">用户管理系统</span>
+			<span class="sysnameen">USER MANAGEMENT SYSTEM</span>
+		</div>
+		<div class="form_span">
+			<div class="form_div">
+				<div class="dropdown">
+					<input type="text" placeholder="请选择您所属经销商" readonly='readonly' id='showUserPicker' class="mui-btn mui-btn-block tonormal"
+					 type='button'></input>
+					<span class="iconfont">&#xe658;</span>
+					<input id="custom_id" type="hidden" >
+				</div>
+				<input type="text" id="realname" placeholder="为了享受更好的服务请填写真实姓名" />
+				<input type="text" id="address" placeholder="请填写您的地址" />
+				<input type="text" id="mobile" placeholder="请填写您的手机号码"  />
+				<div class="checkNumSpan">
+					<input id="code" placeholder="请输入您收到的验证码" type="text" />
+					<button class="getCheckNum" size="mini" >获取验证码</button>
+					<span class="checkNum" style="display: none;" ></span>
+				</div>
+				<button id='buttonspan'>注册</button>
+				<div style="font-size: calc(1rem - 2px);color:#80808096 ;">
+					注册成功后自动登录
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+			var slider = mui("#slider");
+			slider.slider({
+				interval: 5000
+			});
+			mui.ready(function() {
+				var userPicker = new mui.PopPicker();
+				mui.getJSON("<?php echo url('user/login/customs') ?>",{},function(ret){
+					if (ret.code == 200){
+						userPicker.setData(ret.data);
+					}
+				});
+				var showUserPickerButton = document.getElementById('showUserPicker');
+				showUserPickerButton.addEventListener('tap', function(event) {
+					userPicker.show(function(items) {
+						showUserPickerButton.value=items[0].text;
+						document.getElementById("custom_id").setAttribute('value',items[0].value);
+					});
+				}, false);
+
+				var getcheckbutton=mui('.getCheckNum')[0];
+				var checkNum=mui('.checkNum')[0];
+				mui('.getCheckNum')[0].addEventListener('tap',function(e){
+					var mobile = document.getElementById("mobile").value;
+					if (mobile == null || mobile == '' || mobile == undefined){
+						mui.alert('请输入手机号！');
+	                  	return false;
+					}
+					if (!(/^1[3|4|5|7|8][0-9]\d{4,8}$/.test(mobile))){
+						mui.alert('手机号格式错误！');
+	                  	return false;
+					}
+
+					mui.ajax('/user/login/get_vcode', 
+		          	{         
+		              data:{
+		              	'id':"<?php echo $_GET['id']; ?>",
+						'mobile':mobile
+					  },
+		              type:'POST',//HTTP请求类型 
+		              dataType:'json',//服务器返回json格式数据 
+		              timeout:10000,//超时时间设置为10秒； 
+		              headers:{'Content-Type':'application/json'},          
+		              success:function(ret) 
+		              { 
+		                if(ret.code == 200) 
+		                { 
+		                  	mui.alert(ret.msg);
+
+		                  	getcheckbutton.style.display='none';
+							checkNum.style.display='block';
+							var i = 59;
+							checkNum.innerText='60S';
+							var setCheckNum=setInterval(function(){
+								if(i<0){
+									clearInterval(setCheckNum);
+									checkNum.style.display='none';
+									getcheckbutton.style.display='block';
+									return;
+								};
+								checkNum.innerText=i+' S';
+								i--;
+							},1000)
+		                  	return false;
+		                }else 
+		                { 
+		                  	mui.alert(ret.msg);
+		                  	return false;
+		                } 
+		              }, 
+		              error:function(xhr,type,errorThrown) 
+		              { 
+		                //异常处理；                
+		                mui.alert(type); 
+		                console.log(type); 
+		              } 
+		          	});
+				})
+
+				document.getElementById('buttonspan').addEventListener('tap',function() {
+					var custom_id = document.getElementById("custom_id").value;
+					var realname = document.getElementById("realname").value;
+					var address = document.getElementById("address").value;
+		          	var mobile = document.getElementById("mobile").value;
+		          	var code = document.getElementById("code").value;
+		          	if (custom_id == null || custom_id == '' || custom_id == undefined){
+						mui.alert('请选择经销商！');
+	                  	return false;
+					}
+					if (realname == null || realname == '' || realname == undefined){
+						mui.alert('请输入真实姓名！');
+	                  	return false;
+					}
+					if (address == null || address == '' || address == undefined){
+						mui.alert('请输入地址！');
+	                  	return false;
+					}
+					if (mobile == null || mobile == '' || mobile == undefined){
+						mui.alert('请输入手机号！');
+	                  	return false;
+					}
+					if (code == null || code == '' || code == undefined){
+						mui.alert('请输入验证码！');
+	                  	return false;
+					}
+		          	mui.ajax('/user/login/register', 
+		          	{         
+		              data:{
+		              	'id':"<?php echo $_GET['id']; ?>",
+		              	'custom_id':custom_id,
+		              	'realname':realname,
+		              	'address':address,
+						'mobile':mobile,
+						'code':code
+					  },
+		              type:'POST',//HTTP请求类型 
+		              dataType:'json',//服务器返回json格式数据 
+		              timeout:10000,//超时时间设置为10秒； 
+		              headers:{'Content-Type':'application/json'},          
+		              success:function(ret) 
+		              { 
+		                if(ret.code == 200) 
+		                { 
+		                  	mui.alert(ret.msg);
+		                  	setInterval(function(){
+		                  		mui.openWindow("/user/my/index")
+		                  	},1000);
+		                }else 
+		                { 
+		                  	mui.alert(ret.msg);
+		                  	return false;
+		                } 
+		              }, 
+		              error:function(xhr,type,errorThrown) 
+		              { 
+		                //异常处理；                
+		                mui.alert(type); 
+		                console.log(type); 
+		              } 
+		          	});  
+		        });
+			})
+		</script>
+	</body>
+</html>

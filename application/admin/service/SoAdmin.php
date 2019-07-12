@@ -199,7 +199,6 @@ class SoAdmin extends Service
             return false;
         }
         return $admin;
-
     }
 
 	/**

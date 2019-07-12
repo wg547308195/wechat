@@ -1,0 +1,400 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>我的产品</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="/template/css/mui.css" rel="stylesheet" />
+		<link href="/template/iconfont/iconfont.css" rel='stylesheet' />
+		<link rel="stylesheet" type="text/css" href="/template/css/mui.picker.min.css" />
+		<script src="/template/js/mui.js"></script>
+		<script src="/template/js/mui.picker.min.js"></script>
+		<style type="text/css">
+			body {
+				background-color: white;
+			}
+
+			.baseinfo {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				padding: 40px 0 20px;
+				align-items: center;
+			}
+
+			.baseinfo img {
+				width: 30vw;
+				height: 30vw;
+			}
+
+			.baseinfo span {
+				letter-spacing: 1px;
+				color: #000000a1
+			}
+
+			.baseinfo span.name {
+				color: #000000;
+				margin: 3px 0;
+				font-weight: bold;
+				font-size: calc(1rem + 4px);
+				letter-spacing: 2px;
+			}
+
+			.card {
+				margin: 0 5vw 20px;
+				border-radius: 6px;
+				overflow: hidden;
+				box-shadow: 0 0 4px rgba(0, 0, 0, .1);
+				position: relative;
+			}
+
+			.goodslistItem {
+				display: flex;
+				padding: 10px;
+				padding-right: 25px;
+				position: relative;
+				justify-content: space-between;
+			}
+
+			.activeitem {
+				background-color: rgba(0, 0, 0, .05);
+			}
+
+			.newmessagedot {
+				position: absolute;
+				top: 10px;
+				right: 6px;
+			}
+
+			.normalCard {
+				padding: 5px 25px 5px 10px;
+			}
+
+			.normalCard>div {
+				margin: 5px 0;
+				font-size: calc(1rem - 2px);
+				display: flex;
+			}
+
+			.overflowspan {
+				flex-grow: 1;
+				flex-shrink: 1;
+				color: #000000d9;
+			}
+
+			.unoverflowspan {
+				flex-grow: 0;
+				flex-shrink: 0;
+			}
+
+			.popovercontent {
+				width: 80vw;
+				background-color: white;
+				position: fixed;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+			}
+
+			.adddsupplybutton {
+				width: 90vw;
+				margin: 10px 5vw;
+				height: 2rem;
+				border-radius: 4px;
+				box-shadow: 0 0 2px rgba(0, 0, 0, .2);
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				padding: 0
+			}
+
+			.addproductbutton {
+				width: 90vw;
+				margin: 10px 5vw;
+				height: 2rem;
+				border-radius: 0.9rem;
+				box-shadow: 0 0 4px rgba(0, 0, 0, .2);
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				padding: 0
+			}
+			input::-moz-placeholder{
+				font-size: calc(1rem - 2px);
+				color: #C7C7CC;
+			}
+			
+			input::-ms-input-placeholder {
+				font-size: calc(1rem - 2px);
+				color: #C7C7CC;
+			
+			}
+			
+			input::-webkit-input-placeholder {
+				font-size: calc(1rem - 2px);
+				color: #C7C7CC;
+			
+			}
+			
+			textarea::-moz-placeholder {
+				font-size: calc(1rem - 2px);
+				width: 100%;
+				color: #C7C7CC;
+				border-bottom: 1px solid rgba(0,0,0,.2);
+			}
+			
+			textarea::-ms-input-placeholder {
+				font-size: calc(1rem - 2px);
+				border-bottom: 1px solid rgba(0,0,0,.2);
+				color: #C7C7CC;
+				width: 100%
+			}
+			
+			textarea::-webkit-input-placeholder {
+				font-size: calc(1rem - 2px);
+				color: #C7C7CC;
+				border-bottom: 1px solid rgba(0,0,0,.2);
+				width: 100%
+			}
+			.ownslider {
+				position: relative;
+				overflow: hidden;
+				width: 100vw;
+				margin-bottom: 20px;
+			}
+			
+			.ownslider-group {
+				display: flex;
+				flex-wrap: nowrap;
+				transition-duration: 1s;
+			}
+			
+			.ownslider-item {
+				flex-grow: 0;
+				flex-shrink: 0;
+				width: 100vw;
+				padding: 0 2.5vw;
+			}
+			
+			.ownslider-indicator {
+				background-color: rgba(0, 0, 0, .07);
+				position: absolute;
+				bottom: 0;
+				padding: 2.5vw;
+				display: flex;
+				justify-content: space-between;
+				font-size: calc(1rem - 4px);
+				width: 100vw;
+			}
+			
+			.ownslider-indicator>div:first-child {
+				flex-grow: 1;
+				flex-shrink: 1;
+				text-align: center;
+				height: 1rem;
+				padding: 0
+			}
+			
+			.dots {
+				display: flex;
+				justify-content: center;
+				flex-grow: 0;
+				flex-shrink: 0;
+				flex-wrap: nowrap;
+			}
+			
+			.dotsitem {
+				width: 10px;
+				height: 10px;
+				border-radius: 5px;
+				overflow: hidden;
+				background: white;
+				margin: 0 2px;
+			}
+			.sliderpicture {
+				max-height: calc(100vh - 40vw - 68px - 30vh);
+				width: 100%;
+			}
+
+			.footer {
+				background-color: white;
+				position: fixed;
+				bottom: 0;
+				height: 59px;
+				display: flex;
+				border-top: 1px solid rgba(0, 0, 0, .2);
+			}
+
+			.footer>div {
+				display: flex;
+				width: 50vw;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				font-size: 14px;
+			}
+
+			.footer>div:first-child {
+				color: #6eb92b
+			}
+
+			.footer>div img {
+				height: 35px;
+
+			}
+		</style>
+	</head>
+
+	<body>
+		<header id="header" class="mui-bar mui-bar-transparent">
+			<a href="<?php echo url('/user/my/goods') ?>" class="mui-icon mui-icon-left-nav mui-pull-left"></a>
+		</header>
+		<div class="card normalCard" style="margin-top: 50px;">
+			<div>
+				产品名称：{$user_goods['goods']['name']}
+			</div>
+			<div>
+				购买日期：{:date('Y-m-d',strtotime($user_goods['create_time']))}
+			</div>
+			<div>
+				<span>保修期限：{:date('Y-m-d',strtotime($user_goods['end_time']))}</span>
+				<span style="color: #000000a1;">(剩余{$user_goods['surplus_time']}天)</span>
+			</div>
+		</div>
+		<div>
+			<button id="checkweibao" class="iconfont addproductbutton"><span style="display: inline-block;margin-right: 5px;">&#xe63a;</span>申请维保</button>
+		</div>
+		<?php if (count($user_orders) > 0) { ?>
+		<?php foreach($user_orders as $info){ ?>
+		<div class="card normalCard">
+			<div>
+				<span class="unoverflowspan">维保描述：</span>
+				<span class="overflowspan">{$info['desc']}</span>
+			</div>
+			<div>
+				<span class="unoverflowspan">申请时间：</span>
+				<span class="overflowspan">{:date('Y-m-d',strtotime($info['create_time']))}</span>
+			</div>
+			<?php if ($info['status'] == 0){ ?>
+			<div style="display: flex;justify-content: center;">
+				<button style="padding:0;height: 1.5rem;color: white;background-color: #3eb653;width: 4rem;">处理中</button>
+			</div>
+			<svg class="newmessagedot" width="10px" heigh='10px'>
+				<circle cx='5' cy='5' r='5' fill='red'></circle>
+			</svg>
+			<?php }else{ ?>
+			<div>
+				<span class="unoverflowspan">处理时间：</span>
+				<span class="overflowspan">{$info['handle_time']}</span>
+			</div>
+			<div>
+				<span class="unoverflowspan">备注信息：</span>
+				<span class="overflowspan">{$info['remark'] ?: '-'}</span>
+			</div>
+			<div style="display: flex;justify-content: center;">
+				<?php if ($info['status'] == 1){ ?>
+				<span style="color: #4cd964;letter-spacing: 2px;" class="iconfont">&#xe652;已维保</span>
+				<?php }else{ ?>
+				<span style="color: #000000a1;letter-spacing: 2px;" class="iconfont">&#xe651;已拒绝</span>
+				<?php } ?>
+			</div>
+			<?php } ?>
+		</div>
+		<?php } ?>
+		<?php }else{ ?>
+		<div class="goodslistItem" style="justify-content: center;padding: 20px 0 20px;align-items: center;">
+			暂无维保记录
+		</div>
+		<?php } ?>
+
+		<div style="height: 70px;"></div>
+		{include file="common/footer" /}
+		<div id="middlePopover" class="mui-popover">
+			<div class="popovercontent normalCard">
+				<div>
+					<span class="unoverflowspan">维保描述：</span>
+					<span class="overflowspan">
+						<textarea style="background: none;border:none;padding:0" id="desc" rows="3" placeholder="请输入维保描述"></textarea>
+					</span>
+				</div>
+				<div style="display: flex;justify-content: center;">
+					<a id='checkweibao1' style="margin:0 10px" type="button" class="mui-btn mui-btn-success">维保</a>
+				</div>
+			</div>
+		</div>
+		
+		<script type="text/javascript">
+			(function($) {
+				$.init();
+				var checkweibao = $('#checkweibao');
+				var checkweibao1 = $('#checkweibao1');
+				var middlePopover = $('#middlePopover');
+
+				var desc = $('#desc');
+				checkweibao[0].addEventListener('tap', function() {
+					desc[0].value = '';
+					checkweibao1[0].style.display = 'block';
+					middlePopover.popover("toggle");
+				});
+				checkweibao1[0].addEventListener('tap', function() {
+					var desc = document.getElementById("desc").value;
+					if (desc == null || desc == '' || desc == undefined){
+						$.toast('请输入维保描述');
+	                  	return false;
+					}
+
+					$.ajax('/user/my/add_order', 
+		          	{         
+		              data:{
+						'desc':desc,
+						'goods_id':"<?php echo $_GET['id']; ?>"
+					  },
+		              type:'POST',//HTTP请求类型 
+		              dataType:'json',//服务器返回json格式数据 
+		              timeout:10000,//超时时间设置为10秒； 
+		              headers:{'Content-Type':'application/json'},          
+		              success:function(ret) 
+		              { 
+		                if(ret.code == 200) 
+		                { 
+		                  	$.alert(ret.msg);
+		                  	setInterval(function(){
+		                  		location.reload();
+		                  	},1000);
+		                }else 
+		                { 
+		                  	$.alert(ret.msg);
+		                  	return false;
+		                } 
+		              }, 
+		              error:function(xhr,type,errorThrown) 
+		              { 
+		                //异常处理；                
+		                $.alert(type); 
+		                console.log(type); 
+		              } 
+		          	});
+					middlePopover.popover("toggle");
+				});
+				
+			})(mui);
+
+			function setRem() {
+				document.documentElement.style.fontSize = document.documentElement.clientWidth / 20 + 'px';
+			}
+			setRem();
+			window.addEventListener('resize', setRem);
+			// mui.init()
+
+			mui('.mui-scroll-wrapper').scroll();
+			mui('body').on('shown', '.mui-popover', function(e) {});
+			mui('body').on('hidden', '.mui-popover', function(e) {});
+			mui('.normalCard').on('tap', '.mui-btn-success', function() {
+				window.location.hash = '#middlePopover'
+			})
+			
+		</script>
+	</body>
+
+</html>

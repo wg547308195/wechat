@@ -1,0 +1,214 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>我的客户</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="/template/css/mui.css" rel="stylesheet" />
+		<link href="/template/iconfont/iconfont.css" rel="stylesheet" />
+		<script src="/template/js/mui.js"></script>
+		<style type='text/css'>
+			body {
+				background-color: white;
+			}
+
+			.topBar {
+				font-weight: bold;
+				text-align: center;
+				border-bottom: 1px solid #C8C7CC;
+				height: 2rem;
+				line-height: 2rem;
+				letter-spacing: 2px;
+			}
+
+			.searchSpan {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+			}
+
+			.name {
+				width: 90vw;
+				margin: 10px 0;
+				height: 2rem;
+				line-height: 2rem;
+				display: flex;
+				font-size: 1rem;
+				justify-content: space-between;
+				font-weight: bold;
+				letter-spacing: 1px;
+			}
+
+			.otherFont {
+				font-size: 0.8rem;
+				font-weight: bold;
+			}
+
+			#searchInput {
+				width: 90vw;
+				height: 1.6rem;
+				line-height: 1.6rem;
+				border-radius: 0.8rem;
+				border: none;
+				box-shadow: 0 0 2px #AAAAAA;
+				text-align: center;
+				letter-spacing: 1px;
+			}
+
+			input::placeholder {
+				color: #80808096;
+				text-align: center;
+				letter-spacing: 1px;
+			}
+
+			input::-moz-placeholder {
+				color: #80808096;
+				text-align: center;
+				letter-spacing: 1px;
+
+			}
+
+			input::-ms-input-placeholder {
+				color: #80808096;
+				text-align: center;
+				letter-spacing: 1px;
+
+			}
+
+			input::-webkit-input-placeholder {
+				color: #80808096;
+				text-align: center;
+				letter-spacing: 1px;
+
+			}
+
+			.messagenum {
+				height: 1rem;
+				margin-top: 10px;
+				letter-spacing: 1px;
+			}
+
+
+			.footer div:first-child img{
+				width: 35px;
+				height: 30px;
+			}
+			.footer div:last-child img{
+				width: 30px;
+				height: 30px;
+			}
+
+			.footer {
+				background-color: white;
+				position: fixed;
+				bottom: 0;
+				height: 59px;
+				display: flex;
+				border-top: 1px solid rgba(0, 0, 0, .2);
+			}
+
+			.footer>div {
+				display: flex;
+				width: 50vw;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				font-size: 14px;
+			}
+
+			.footer>div:first-child {
+				color: #6eb92b
+			}
+
+			.footer>div img {
+				height: 35px;
+
+			}
+			.userlist{
+				padding-bottom: 70px;
+			}
+			.card{
+				box-shadow: 0 0 4px rgba(0,0,0,.2);
+				border-radius: 4px;
+				display: flex;
+				position: relative;
+				padding:10px;
+				width: 90vw;
+				margin:10px auto;
+			}
+			.card:active{
+				background-color: rgba(0,0,0,0.05);
+				-webkit-tap-highlight-color:transparent;
+			}
+			.card img{
+				width: 50px;
+				height: 50px;
+				flex-grow: 0;
+				flex-shrink: 0;
+			}
+			.newmessagedot{
+				position: absolute;
+				top:10px;
+				right: 10px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="topBar">
+			我的客户
+		</div>
+		
+		<div class="searchSpan">
+			<div class="name">
+				<div>
+					{$custom['nickname']}
+				</div>
+				<div>
+					<span>{:count($user_list)}</span>
+					<span class="otherFont">数量</span>
+				</div>
+			</div>
+			<span class="messagenum">您有<span style="color: red;">{$total_user_order}</span>条维保待处理</span>
+		</div>
+		<div class='userlist'>
+			<?php foreach($user_list as $info){ ?>
+			<div class="card" onclick="detail({$info['id']},this)">
+				<img src="{$info['headimgurl']}" />
+				<div style="margin-left: 15px;">
+					<div style="font-weight: bold;margin-bottom: 5px;">{$info['realname']}</div>
+					<div>{$info['mobile']}</div>
+				</div>
+				<?php if ($info['_red_circle'] == 1){ ?>
+				<svg  class='newmessagedot' width='10px' height='10px'>
+					<circle cx='5' cy='5' r='5' fill='red'></circle>
+				</svg>
+				<?php } ?>
+			</div>
+			<?php } ?>
+		</div>
+		{include file="common/footer" /}
+		<script type="text/javascript">
+			function setRem() {
+				document.documentElement.style.fontSize = document.documentElement.clientWidth / 20 + 'px';
+			}
+			setRem();
+			window.addEventListener('resize', setRem);
+			var dcmh=document.documentElement.clientHeight;
+			var dcmw=document.documentElement.clientWidth;
+			var docomentRem=document.documentElement.clientWidth / 20;
+			var topPx=(2*docomentRem + 1 + 2*docomentRem + 1.6*docomentRem + docomentRem + 30+10).toFixed(2)+'px';
+			var bottomPx=(1.5*docomentRem + 40).toFixed(2)+'px';
+			console.log(topPx+'         '+bottomPx);
+			mui.init();
+			document.getElementById('searchInput').setAttribute('placeholder', '\ue6a2 Search');
+
+	        function detail(id, obj){
+	        	mui.openWindow("/custom/index/user_detail?id="+id)
+	        }
+		</script>
+	</body>
+
+</html>

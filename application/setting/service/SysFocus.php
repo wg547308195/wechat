@@ -26,6 +26,9 @@ class SysFocus extends Service
         if (isset($maps['name'])) {
             $model = $model->where('name','like','%'.$maps['name'].'%');
         }
+        if (isset($maps['status'])) {
+            $model = $model->where('status','=',$maps['status']);
+        }
         $model = $model->order($order)->field($field);
 
         if($page !== false) {

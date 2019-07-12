@@ -14,9 +14,9 @@ class SoUserOrder extends Model
 	}
 
 	/**
-	 * [Goods 产品]
+	 * [UserGoods 用户产品]
 	 */
-	protected function User(){
-		return $this->hasOne("app\\goods\\model\\SoGoods",'goods_id', 'goods_id');
+	protected function UserGoods(){
+		return $this->hasOne("app\\user\\model\\SoUserGoods",'goods_id', 'user_goods_id');
 	}
 }

@@ -27,6 +27,9 @@ class SysArea extends Service
         if (isset($maps['parent_id']) && $maps['parent_id'] > 0) {
              $result = $result->where('parent_id','=',$maps['parent_id']);
         }
+        if (isset($maps['level_type'])) {
+            $result = $result->where('level_type','=',$maps['level_type']);
+        }
         if (isset($maps['name'])) {
             $result = $result->where('name','like','%'.$maps['name'].'%');
         }

@@ -6,23 +6,5 @@ username = root
 password = root
 hostport = 3306
 
-[redis]
-host = redis
-port = 6379
-password =
-select =
-timeout = 60
-expire = 0
-persistent = false
-prefix =
-serialize = true
-
 [upload]
 upload_url = http://www.hzkj.com
-
-[swoole]
-host = 0.0.0.0
-port = 9501
-worker_num = 4
-daemonize = 0
-task_worker_num = 8

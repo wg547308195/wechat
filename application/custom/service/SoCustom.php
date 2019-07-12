@@ -167,14 +167,14 @@ class SoCustom extends Service
         }
         Db::startTrans();
         try {
-            $model->isUpdate(true)->save($data);
+            $custom->isUpdate(true)->save($data);
         } catch (\Exception $e) {
             $this->error = $e->getMessage();
             Db::rollback();
             return false;
         }
         Db::commit();
-        return $model;
+        return $custom;
     }
 
     /**
@@ -239,7 +239,7 @@ class SoCustom extends Service
         Db::startTrans();
 
         $custom = $model->where('username' ,'=' ,$params['username'])->find();
-        if(!$custom) {
+        if(empty($custom->id)) {
             $this->error = '用户名或密码错误';
             return false;
         }
@@ -248,8 +248,28 @@ class SoCustom extends Service
             return false;
         }
         //写入登陆cookie
-        cookie('custom_account_token',encrypt($custom->username."_\t".$custom->password));
+        cookie('custom_token',encrypt($custom->username."_\t".$custom->password));
         Db::commit();
+        return $custom;
+    }
+
+    /**
+     * 登录验证
+     * @param string  $account_token  用户token
+     * @return mixed
+     */
+    public function validate_token($custom_token = ''){
+        if (empty($custom_token)){
+            $this->error = 'token不能为空';
+            return false;
+        }
+        $custom_token = decrypt($custom_token);
+        list($username, $password) = explode("_\t", $custom_token);
+        $custom = model('custom/so_custom')->where('username','=',$username)->where('password','=',$password)->find();
+        if (empty($custom->id)){
+            $this->error = '非法登陆';
+            return false;
+        }
         return $custom;
     }
 }

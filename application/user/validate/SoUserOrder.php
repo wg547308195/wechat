@@ -9,10 +9,10 @@ class SoUserOrder extends Validate
      */
     protected $rule = [
       'uid|用户' => 'require|number|max:10',
-      'goods_id|产品' => 'require|number|max:10',
+      'user_goods_id|产品' => 'require|number|max:10',
       'desc|维保描述' => 'require',
       'status|处理状态' => 'in:-1,1',
-      'handle_time|处理时间' => 'number|max:10'
+      'handle_time|处理时间' => 'require|date'
     ];
 
      /**
@@ -25,7 +25,7 @@ class SoUserOrder extends Validate
      * 验证场景
      */
     protected $scene = [
-        'add'  => ['uid','goods_id','desc'],
+        'add'  => ['uid','user_goods_id','desc'],
         'handle'  => ['status','handle_time']
     ];
 }

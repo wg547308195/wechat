@@ -1,20 +1,144 @@
-{include file="common/header" /}
-	<link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/0.4.2/weui.min.css">
-	<body ontouchstart>
-		<div class="weui_panel weui_panel_access">
-			<div class="weui_panel_bd">
-				<?php foreach ($goods as $key => $info) : ?>
-			    <a href="javascript:void(0);" class="weui_media_box weui_media_appmsg">
-		            <div class="weui_media_hd">
-		                <img class="weui_media_appmsg_thumb" src="{$info['imgs']}" alt="">
-		            </div>
-		            <div class="weui_media_bd">
-		                <h4 class="weui_media_title">{$info['name']}</h4>
-		                <!-- <p class="weui_media_desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</p> -->
-		            </div>
-		        </a>
-		        <?php endforeach ?>
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>个人中心</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="/template/css/mui.css" rel="stylesheet" />
+		<link href="/template/iconfont/iconfont.css" rel="stylesheet" />
+		<script src="/template/js/mui.js"></script>
+		<style type="text/css">
+			body{
+				background-color: white;
+			}
+			.infospan {
+				width: 85vw;
+				padding:0 5vw;
+				box-shadow: 0 0 4px #B5B5B7;
+				margin:auto;
+				height: 30vh;
+				border-radius: 0 0 47.5vw 47.5vw / 0 0 5vh 5vh;
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+			}
+			
+			.baseinfo{
+				display: flex;
+				justify-content: space-between;
+				padding-top:2.5vh ;
+				flex-wrap:nowrap ;
+			}
+			.baseinfo img{
+				flex-grow: 0;
+				flex-shrink: 0;
+			}
+			
+			.infotext {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+			}
+			.infotext span{
+				margin:2px 0;
+			}
+			.infotext span:first-child{
+				letter-spacing: 1px;
+			}
+			
+			.logospan {
+				width: 12vh;
+				height: 12vh;
+				border-radius: 6vh;
+				overflow: hidden;
+				flex-grow: 0;
+				flex-shrink: 0;
+			}
+			
+			.editspan {
+				flex-grow: 1;
+				font-size: 1.5rem;
+				display: flex;
+				justify-content: center;
+				align-items: flex-end;
+				padding-bottom: 5vh;
+			}
+			
+			.centerspan{
+				height: calc(70vh - 60px);
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+			}
+			.centerspan img{
+				width: 40vw;
+				height: 40vw;
+			}
+			.centerspan span{
+				color: #6eb92b;
+			}
+			.footer{
+				height: 59px;
+				border-top: 1px solid rgba(0,0,0,.2);
+				display: flex;
+				width: 100vw;
+			}
+			
+			.footer div{
+				width: 50%;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				font-size: 14px;
+			}
+			.footer div:last-child{
+				color: #6EB92B;
+			}
+			.footer div:first-child img{
+				width: 35px;
+				height: 30px;
+			}
+			.footer div:last-child img{
+				width: 30px;
+				height: 30px;
+			}
+		</style>
+	</head>
+
+	<body>
+	<div>
+		<div class="infospan">
+			<div class="baseinfo">
+				<div class="infotext">
+					<span style="font-weight: bold;">{$user['realname']}</span>
+					<span style="font-size: calc(1rem - 2px);">{$user['mobile']}</span>
+					<span style="font-size: calc(1rem - 2px);">{$user['address']}</span>
+				</div>
+				<img src="{$user['headimgurl']}" class="logospan"></img>
+			</div>
+			<div class="iconfont editspan">
+				<span id="profile">&#xe872;</span>
 			</div>
 		</div>
+		<div class="centerspan">
+			<img src="/template/pictures/logo.png"></img>
+			<span>全国统一服务热线：400 091 7889</span>
+			<span style="color: #000000;margin-top: 10px;letter-spacing: 1px;">经销商：{$user['custom']['nickname']}</span>
+			<span style="color: #000000;letter-spacing: 1px;">联系方式：{$user['custom']['mobile']}</span>
+		</div>
+		{include file="common/footer" /}
+	</div>
+	<script type="text/javascript">
+		mui.init()
+		mui.ready(function() { 
+	        document.getElementById('profile').addEventListener('tap',function() { 
+	        	mui.openWindow("/user/my/profile")
+	        }); 
+	    }); 
+	</script>
 	</body>
+
 </html>

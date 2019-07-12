@@ -1,0 +1,180 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>个人资料修改</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="/template/css/mui.css" rel="stylesheet" />
+		<style type="text/css">
+			body {
+			}
+
+			.normalinput {
+				border: none;
+				padding: 0.5rem 0;
+				text-indent: 2rem;
+				border:none
+			}
+			input.normalinput{
+				border:none;
+				margin:0;
+			}
+
+			.checkNumSpan {
+				width: 100vw;
+				border: none;
+				padding: 0.5rem 0;
+				display: flex;
+				justify-content: space-between;
+				background-color: white;
+				overflow: hidden;
+			}
+
+			.checkNumSpan input {
+				width: calc(100% - 6em);
+				border: none;
+				flex-grow: 1;
+				flex-shrink: 1;
+
+			}
+
+			.getCheckNum {
+				height: calc(1rem + 10px);
+				padding: 2px 0;
+				background-color: #007aff;
+				color: white;
+				width: 6em;
+				flex-grow: 0;
+				flex-shrink: 0;
+			}
+
+			.loadingforcheck {
+				padding: 0 4px;
+				height: 1rem;
+				line-height: 1rem;
+				font-size: calc(1rem - 6px);
+				border-radius: 4px;
+				width: 2.5em;
+				text-align: center;
+			}
+
+			.form_div {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+			}
+
+			.submitButton {
+				width: 100%;
+				margin-top: 20px;
+				background-color: white;
+				padding: 0;
+				height: 2rem;
+				line-height: 2rem;
+				border-radius: 1rem;
+				border: 1px solid #E6E6E6;
+				display: block;
+			}
+
+			.submitButton:after {
+				border: none;
+			}
+
+			input::-moz-placeholder {
+				font-size: calc(1rem - 2px);
+			}
+
+			input::-ms-input-placeholder {
+				font-size: calc(1rem - 2px);
+
+			}
+
+			input::-webkit-input-placeholder {
+				font-size: calc(1rem - 2px);
+			}
+
+			.checkNum {
+				height: calc(1rem + 6px);
+				padding: 0 2px;
+				color: black;
+				flex-grow: 0;
+				flex-shrink: 0;
+			}
+			.itemcontainer{
+				background-color: white;
+				display: flex;
+				align-items: center;
+				margin-bottom: 10px;
+			}
+			.itemcontainer span{
+				margin-left: 10px;
+				flex-grow:0;
+				flex-shrink: 0;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<header id="header" class="mui-bar mui-bar-transparent">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		</header>
+		<div style="margin:44px 0">
+			<div class="form_div">
+				<div class='itemcontainer'>
+					<span>昵称</span>
+				<input class="normalinput" type="text" value="{$custom['nickname']}" id="nickname" placeholder="请输入昵称" />
+				</div>
+				<div class='itemcontainer'>
+					<span>邮箱</span>
+					<input class="normalinput" type="text" value="{$custom['email']}" id="email" placeholder="请输入邮箱" />
+				</div>
+				<button class="submitButton" id="profile">确认修改</button>
+			</div>
+		</div>
+		<script src="/template/js/mui.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+
+			mui.ready(function() { 
+		        document.getElementById('profile').addEventListener('tap',function() {
+		          	var nickname = document.getElementById("nickname").value;
+		          	var email = document.getElementById("email").value;
+		          	mui.ajax('/custom/index/profile', 
+		          	{         
+		              data:{
+						'nickname':nickname,
+						'email':email
+					  },
+		              type:'POST',//HTTP请求类型 
+		              dataType:'json',//服务器返回json格式数据 
+		              timeout:10000,//超时时间设置为10秒； 
+		              headers:{'Content-Type':'application/json'},          
+		              success:function(ret) 
+		              { 
+		                if(ret.code == 200) 
+		                { 
+		                  	mui.alert(ret.msg);
+		                  	setInterval(function(){
+		                  		mui.openWindow("/custom/index/profile")
+		                  	},1000);
+		                }else 
+		                { 
+		                  	mui.alert(ret.msg);
+		                  	return false;
+		                } 
+		              }, 
+		              error:function(xhr,type,errorThrown) 
+		              { 
+		                //异常处理；                
+		                mui.alert(type); 
+		                console.log(type); 
+		              } 
+		          	});  
+		        }); 
+		    });
+		</script>
+	</body>
+
+</html>

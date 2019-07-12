@@ -5,7 +5,6 @@ use app\common\library\Model;
 
 class SoGoods extends Model
 {
-    protected $pk = 'goods_id';
     protected $append = [
     	'status_text','desc'
     ];

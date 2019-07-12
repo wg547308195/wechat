@@ -17,7 +17,7 @@ layui.define(['table', 'form', 'upload'], function(exports){
     elem: '#LAY-goods-manage'
     ,url: '/admin/goods/index' + site_url//模拟接口
     ,cols: [[
-      {field: 'goods_id', title: 'ID', width: 200}      
+      {field: 'id', title: 'ID', width: 200}      
       ,{field: 'name', title: '名称' ,minWidth: 100}
       ,{field: 'cat_id', title: '分类', align:'center', width: 120,templet:function (d) {
           if (d.category) {
@@ -61,7 +61,7 @@ layui.define(['table', 'form', 'upload'], function(exports){
             $.ajax({
               url: '/admin/goods/delete',
               type: "POST",
-              data: {'goods_id':data.goods_id},
+              data: {'id':data.id},
               dataType: 'json',
               success: function(res) {
                 if (res.code == 0){
@@ -107,7 +107,7 @@ layui.define(['table', 'form', 'upload'], function(exports){
           //监听提交
           iframeWindow.layui.form.on('submit('+ submitID +')', function(data){
             var field = data.field; //获取提交的字段
-            field.goods_id = obj.data.goods_id;
+            field.id = obj.data.id;
             //ajax开始
             $.ajax({
               url: '/admin/goods/edit',

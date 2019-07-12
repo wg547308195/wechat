@@ -28,6 +28,9 @@ class SmsTemplate extends Service
         if (isset($maps['id'])) {
             $model = $model->where('id','=',$maps['id']);
         }
+        if (isset($maps['status'])) {
+            $model = $model->where('status','=',$maps['status']);
+        }
 
         $model = $model->order($order)->field($field);
 

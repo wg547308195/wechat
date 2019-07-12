@@ -1,0 +1,226 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>手机号修改</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="/template/css/mui.css" rel="stylesheet" />
+		<style type="text/css">
+			body {
+			}
+
+			.normalinput {
+				width: 100vw;
+				border: none;
+				padding: 0.5rem 0;
+				text-indent: 2rem;
+			}
+
+			.checkNumSpan {
+				margin-top: 10px;
+				width: 100vw;
+				border: 1px solid rgba(0, 0, 0, .2);
+				border-radius:3px;
+				overflow: hidden;
+				padding:0;
+				display: flex;
+				justify-content: space-between;
+				background-color: white;
+				overflow: hidden;
+				align-items: center;
+			}
+
+			.checkNumSpan input {
+				width: calc(100% - 6em);
+				text-indent: 2rem;
+				border: none;
+				flex-grow: 1;
+				flex-shrink: 1;
+				margin: 0;
+			}
+
+			.getCheckNum {
+				height: calc(1rem + 8px);
+				padding: 1px 0;
+				background-color: #007aff;
+				color: white;
+				width: 6em;
+				flex-grow: 0;
+				flex-shrink: 0;
+			}
+
+			.loadingforcheck {
+				padding: 0 4px;
+				height: 1rem;
+				line-height: 1rem;
+				font-size: calc(1rem - 6px);
+				border-radius: 4px;
+				width: 2.5em;
+				text-align: center;
+			}
+
+			.form_div {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+			}
+
+			.submitButton {
+				width: 70vw;
+				margin: 20px auto;
+				background-color: #19be6b;
+				color: white;
+				padding: 0;
+				height: 2rem;
+				line-height: 2rem;
+				border-radius: 1rem;
+				border: 1px solid #E6E6E6;
+				display: block;
+			}
+
+			.submitButton:after {
+				border: none;
+			}
+
+			input::-moz-placeholder {
+				font-size: calc(1rem - 2px);
+			}
+
+			input::-ms-input-placeholder {
+				font-size: calc(1rem - 2px);
+
+			}
+
+			input::-webkit-input-placeholder {
+				font-size: calc(1rem - 2px);
+			}
+
+			.checkNum {
+				height: calc(1rem + 6px);
+				padding: 0 2px;
+				color: black;
+				flex-grow: 0;
+				flex-shrink: 0;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<header id="header" class="mui-bar mui-bar-transparent">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		</header>
+		<div style="margin:44px 0">
+			<div class="form_div">
+				<input class="normalinput" type="text" id="mobile" placeholder="请输入新联系电话" />
+				<div class="checkNumSpan">
+					<input id="code" type="text" placeholder="输入验证码" />
+					<button class="getCheckNum" size="mini">获取验证码</button>
+					<span class="checkNum" style="display: none;"></span>
+				</div>
+				<button class="submitButton" id="change_mobile">确认修改</button>
+			</div>
+		</div>
+		<script src="/template/js/mui.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+			mui.ready(function() {
+				var getcheckbutton=mui('.getCheckNum')[0];
+				var checkNum=mui('.checkNum')[0];
+				mui('.getCheckNum')[0].addEventListener('tap',function(e){
+					var mobile = document.getElementById("mobile").value;
+					if (mobile == null || mobile == '' || mobile == undefined){
+						mui.alert('请输入手机号！');
+	                  	return false;
+					}
+					if (!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(mobile))){
+						mui.alert('手机号格式错误！');
+	                  	return false;
+					}
+
+					mui.ajax('/custom/index/get_vcode', 
+		          	{         
+		              data:{
+						'mobile':mobile
+					  },
+		              type:'POST',//HTTP请求类型 
+		              dataType:'json',//服务器返回json格式数据 
+		              timeout:10000,//超时时间设置为10秒； 
+		              headers:{'Content-Type':'application/json'},          
+		              success:function(ret) 
+		              { 
+		                if(ret.code == 200) 
+		                { 
+		                  	mui.alert(ret.msg);
+
+		                  	getcheckbutton.style.display='none';
+							checkNum.style.display='block';
+							var i = 59;
+							checkNum.innerText='60S';
+							var setCheckNum=setInterval(function(){
+								if(i<0){
+									clearInterval(setCheckNum);
+									checkNum.style.display='none';
+									getcheckbutton.style.display='block';
+									return;
+								};
+								checkNum.innerText=i+' S';
+								i--;
+							},1000)
+		                  	return false;
+		                }else 
+		                { 
+		                  	mui.alert(ret.msg);
+		                  	return false;
+		                } 
+		              }, 
+		              error:function(xhr,type,errorThrown) 
+		              { 
+		                //异常处理；                
+		                mui.alert(type); 
+		                console.log(type); 
+		              } 
+		          	});
+				})
+
+				document.getElementById('change_mobile').addEventListener('tap',function() {
+		          	var mobile = document.getElementById("mobile").value;
+		          	var code = document.getElementById("code").value;
+		          	mui.ajax('/custom/index/change_mobile', 
+		          	{         
+		              data:{
+						'mobile':mobile,
+						'code':code
+					  },
+		              type:'POST',//HTTP请求类型 
+		              dataType:'json',//服务器返回json格式数据 
+		              timeout:10000,//超时时间设置为10秒； 
+		              headers:{'Content-Type':'application/json'},          
+		              success:function(ret) 
+		              { 
+		                if(ret.code == 200) 
+		                { 
+		                  	mui.alert(ret.msg);
+		                  	setInterval(function(){
+		                  		mui.openWindow("/user/my/index")
+		                  	},1000);
+		                }else 
+		                { 
+		                  	mui.alert(ret.msg);
+		                  	return false;
+		                } 
+		              }, 
+		              error:function(xhr,type,errorThrown) 
+		              { 
+		                //异常处理；                
+		                mui.alert(type); 
+		                console.log(type); 
+		              } 
+		          	});  
+		        });
+			})
+		</script>
+	</body>
+
+</html>

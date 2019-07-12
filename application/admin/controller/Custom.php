@@ -116,4 +116,25 @@ class Custom extends Admin
         //注意：此处状态码一定和前端配置的状态码相同，否则数据会出问题(正常返回200，错误返回0)
         return $this->result($list,200);
     }
+
+    /**
+     * ajax获取地区数据
+     */
+    public function get_area(Request $request){
+        $list =[];
+        $province_list = model('setting/SysArea','service')->lists(['level_type'=>1],false,false);
+        foreach ($province_list as $key => $value) {
+            $list['province_list'][$value['id']] = $value['name'];
+        }
+        $city_list = model('setting/SysArea','service')->lists(['level_type'=>2],false,false);
+        foreach ($city_list as $key => $value) {
+            $list['city_list'][$value['id']] = $value['name'];
+        }
+        $county_list = model('setting/SysArea','service')->lists(['level_type'=>3],false,false);
+        foreach ($county_list as $key => $value) {
+            $list['county_list'][$value['id']] = $value['name'];
+        }
+        
+        return $this->result($list,200);
+    }
 }

@@ -3,7 +3,7 @@ namespace app\message\service;
 
 use app\common\library\Service;
 
-class Message extends Service
+class Wechat extends Service
 {
 	
 	public function _initialize() {
@@ -23,10 +23,8 @@ class Message extends Service
                             return false;
                         }
                     }
-                    $ret_message = "{$fromUser['nickname']} 您好！欢迎关注哈珠科技！点击进入<a href='".url('user/my/index','','',true)."'>个人中心</a>！";
-                    if (empty($ret['custom_id'])){
-                        $ret_message .= "请<a href='".url('user/my/register','','',true)."'>点击注册</a>！";
-                    }
+                    $ret_message = "{$fromUser['nickname']} 您好！欢迎关注哈珠科技！";
+                    $ret_message .= "点击进入<a href='".url('user/my/index','','',true)."'>用户中心</a>！";
 		            return  $ret_message;
 		            break;
 		        case 'text':

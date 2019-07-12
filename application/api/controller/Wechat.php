@@ -4,8 +4,9 @@ namespace app\api\controller;
 use EasyWeChat\Factory;
 use think\facade\Session;
 use EasyWeChat\Kernel\Messages\Text;
-define("TOKEN", "123456");
-class Wechat 
+use think\Controller;
+
+class Wechat extends Controller 
 {
     private $options;
 
@@ -31,7 +32,7 @@ class Wechat
             \Log::write("[消息]".print_r($message, true), 'debug');
 
             //处理消息
-            $ret_message = model('message/message','service')->set_message($message,$fromUser);
+            $ret_message = model('message/wechat','service')->set_message($message,$fromUser);
             if(!$ret_message){
                 return '服务器发生错误，请稍后再试！'; 
             }
@@ -141,16 +142,11 @@ class Wechat
 
     private function checkSignature()
     {
-        // you must define TOKEN by yourself
-        if (!defined("TOKEN")) {
-            throw new Exception('TOKEN is not defined!');
-        }
-
         $signature = $_GET["signature"];
         $timestamp = $_GET["timestamp"];
         $nonce = $_GET["nonce"];
 
-        $token = TOKEN;
+        $token = $this->options['wechat_token'];
         $tmpArr = array($token, $timestamp, $nonce);
         // use SORT_STRING rule
         sort($tmpArr, SORT_STRING);

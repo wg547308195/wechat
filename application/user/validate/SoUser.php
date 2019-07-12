@@ -18,7 +18,8 @@ class SoUser extends Validate
       'province|省份' => 'max:255',
       'city|城市' => 'max:255',
       'sex|性别' => 'number|in:0,1,2',
-      'status|账户状态' => 'in:-1,1'
+      'status|账户状态' => 'in:-1,1',
+      'code|验证码' => 'require|number'
     ];
 
      /**
@@ -32,6 +33,7 @@ class SoUser extends Validate
      */
     protected $scene = [
         'add'  => ['openid','nickname','headimgurl','province','city','sex'],
-        'register'  => ['custom_id','mobile','realname','address']
+        'edit'  => ['realname','address','nickname'],
+        'register'  => ['custom_id','mobile','realname','address','code']
     ];
 }

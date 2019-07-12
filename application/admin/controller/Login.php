@@ -19,7 +19,7 @@ class Login extends Controller
      */
     public function do_login(Request $request)
     {
-        $validate = $this->validate($request->post(), 'app\admin\validate\SoAdmin.login');
+        $validate = $this->validate($request->post(), 'app\custom\validate\SoCustom.login');
         if (true !== $validate) {
             $this->error($validate);
         }

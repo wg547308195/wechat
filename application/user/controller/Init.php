@@ -18,6 +18,10 @@ class Init extends Controller
             $this->redirect(url('user/login/login'));
         }
 
+        if ($this->user['custom_id'] < 1) {
+            $this->redirect(url('user/login/register',['id'=>$this->user['id']]));
+        }
+
         $this->assign('user', $this->user);
     }
 
