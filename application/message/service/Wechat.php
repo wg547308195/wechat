@@ -25,6 +25,7 @@ class Wechat extends Service
                     }
                     $ret_message = "{$fromUser['nickname']} 您好！欢迎关注哈珠科技！";
                     $ret_message .= "点击进入<a href='".url('user/my/index','','',true)."'>用户中心</a>！";
+                    \Log::write("[地址]".print_r($ret_message, true), 'debug');
 		            return  $ret_message;
 		            break;
 		        case 'text':
@@ -88,7 +89,9 @@ class Wechat extends Service
                     'subscribe' => 1,
                     'subscribe_time' => date('Y-m-d H:i:s',time())
                 ];
+                \Log::write("[1111]".print_r($data, true), 'debug');
                 $user_info = model('user/so_user','service')->create($data);
+                \Log::write("[2222]".print_r($user_info, true), 'debug');
                 if(!$user_info){
                     return '服务器发生错误，请稍后再试！'; 
                 } 

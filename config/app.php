@@ -19,11 +19,11 @@ return [
     // 是否支持多模块
     'app_multi_module' => true,
     // 默认模块名
-    'default_module'         => 'user',
+    'default_module'         => 'api',
     // 禁止访问模块
     'deny_module_list'       => ['common'],
     // 默认控制器名
-    'default_controller'     => 'My',
+    'default_controller'     => 'Wechat',
     // 自动搜索控制器
     'controller_auto_search' => true,
     // URL普通方式参数 用于自动生成

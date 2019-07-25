@@ -19,7 +19,8 @@ class SysSetting extends Service
             $result = [];
             if (!empty($list)){
                 foreach ($list as $k => $v) {
-                    $result[$v['key']] = $v['value'];
+                  
+                    $result[$v->key] = $v->value;
                 }
             }
         }

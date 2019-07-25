@@ -58,6 +58,8 @@ class Login extends Controller
      * 用户同意授权登录，获取code并跳转
      */
     public function login() {
+        
+        \Cache::set('wechat_code','');
         $config = model('setting/SysSetting','service')->info();
         $options = [
             'app_id' => $config['wechat_app_id'],
@@ -68,9 +70,9 @@ class Login extends Controller
                 'callback' => url('/user/login/dologin','','',true),
             ]
         ];
-
         $app = Factory::officialAccount($options);
         $oauth = $app->oauth;
+        \Log::write("[oauth]".print_r($oauth, true), 'debug');
 
         return $oauth->redirect();
     }
@@ -80,11 +82,13 @@ class Login extends Controller
      */
     public function dologin() {
         $result = $this->service->login();
+        \Log::write("[666]".print_r($result, true), 'debug');
         if ($result === false){
             return $this->result('',0,$this->service->getError());
         }
         \Log::write("[收到授权回调]".print_r($result, true), 'debug');
         $redirect_url = cookie('redirect_url') ? cookie('redirect_url') : url('user/my/index','','',true);
+
         $this->redirect($redirect_url);
     }
 

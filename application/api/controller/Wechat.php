@@ -4,45 +4,47 @@ namespace app\api\controller;
 use EasyWeChat\Factory;
 use think\facade\Session;
 use EasyWeChat\Kernel\Messages\Text;
-use think\Controller;
-
-class Wechat extends Controller 
+ use think\Controller;
+class Wechat
 {
+
     private $options;
 
-    public function initialize() {
-        parent::initialize();
-        $config = model('setting/SysSetting','service')->info();
+    public function __construct() {
+        $config = config('wechat.wechat');
         $this->options = [
             'app_id' => $config['wechat_app_id'],
             'secret' => $config['wechat_secret'],
             'token' => $config['wechat_token']
         ];
         //定义token时使用，其他时候注释掉
-        //$this->responseMsg();
+        //$this->valid();
     }
 
     public function index(){
-        $app = Factory::officialAccount($this->options);
-        $user = $app->user;
+        try {
+            $app = Factory::officialAccount($this->options);
+            $user = $app->user;
 
-        $app->server->push(function($message) use ($user) {
-            $fromUser = $user->get($message['FromUserName']);
-            \Log::write("[用户信息]".print_r($fromUser, true), 'debug');
-            \Log::write("[消息]".print_r($message, true), 'debug');
+            $app->server->push(function($message) use ($user) {
+                $fromUser = $user->get($message['FromUserName']);
+                \Log::write("[用户信息]".print_r($fromUser, true), 'debug');
+                \Log::write("[消息]".print_r($message, true), 'debug');
 
-            //处理消息
-            $ret_message = model('message/wechat','service')->set_message($message,$fromUser);
-            if(!$ret_message){
-                return '服务器发生错误，请稍后再试！'; 
-            }
-            return $ret_message;
-        });
+                //处理消息
+                $ret_message = model('message/wechat','service')->set_message($message,$fromUser);
+                if(!$ret_message){
+                    return '服务器发生错误，请稍后再试！'; 
+                }
+                return $ret_message;
+            });
 
-        $app->server->serve()->send();
+            $app->server->serve()->send();
+            
+        } catch (\Exception $e) {
+            \Log::write("[错误消息]".print_r($e->getMessage(), true), 'debug');
+        }
     }
-
-    
 
     //数据存储
     public  function profile()
@@ -87,7 +89,7 @@ class Wechat extends Controller
     public function valid()
     {
         $echoStr = $_GET["echostr"];
-
+        \Log::write("[111]".print_r($echoStr , true), 'debug');
         //valid signature , option
         if($this->checkSignature()){
             echo $echoStr;
@@ -119,7 +121,7 @@ class Wechat extends Controller
                 if(!empty( $keyword ))
                 {
                     $msgType = "text";
-                    $contentStr = "Welcome to wechat world!";
+                    $contentStr = "Welcome to wechat1 world!";
 
                     if($keyword == '123'){
                         $contentStr = 'http://mcmhhs.natappfree.cc/api/v1/custom/wechat_detail?openid=2';
@@ -146,13 +148,12 @@ class Wechat extends Controller
         $timestamp = $_GET["timestamp"];
         $nonce = $_GET["nonce"];
 
-        $token = $this->options['wechat_token'];
+        $token = $this->options['token'];
         $tmpArr = array($token, $timestamp, $nonce);
         // use SORT_STRING rule
         sort($tmpArr, SORT_STRING);
         $tmpStr = implode( $tmpArr );
         $tmpStr = sha1( $tmpStr );
-
         if( $tmpStr == $signature ){
             return true;
         }else{

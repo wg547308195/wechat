@@ -11,7 +11,7 @@ class My extends Init
     }
 
     public function index(){
-
+       
         return $this->fetch('index');
     }
 

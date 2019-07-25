@@ -267,35 +267,45 @@ class SoUser extends Service
      * @return $user
      */
     public function login(){
-        $model = model('user/so_user');
-
-        $config = model('setting/SysSetting','service')->info();
-        $options = [
-            'app_id' => $config['wechat_app_id'],
-            'secret' => $config['wechat_secret'],
-            'token' => $config['wechat_token']
-        ];
-        $app = Factory::officialAccount($options);
-        $userinfo = $app->oauth->user();
-        $userinfo = $userinfo->toArray();
-
-        $user = $model->where('openid','=',$userinfo['id'])->find();
-        if(empty($user->id)) {
-            $data = [];
-            $data['nickname'] = $userinfo['nickname'];
-            $data['openid']   = $userinfo['id'];
-            $user = $this->create($data);
-            if (!$user){
-                $this->error = $this->error;
-                return false;
+        try {
+            $model = model('user/so_user');
+            if(empty(\Cache::get('wechat_code'))){
+                $config = model('setting/SysSetting','service')->info();
+                $options = [
+                    'app_id' => $config['wechat_app_id'],
+                    'secret' => $config['wechat_secret'],
+                    'token' => $config['wechat_token']
+                ];
+                $app = Factory::officialAccount($options);
+                $userinfo = $app->oauth->user();
+                $userinfo = $userinfo->toArray();
+                \Cache::set('wechat_code',$_GET['code']);
+                \Cache::set('openid',$userinfo['id']);
+                \Cache::set('nickname',$userinfo['nickname']);  
             }
+            $user = $model->where('openid','=',\Cache::get('user_id'))->find();
+            \Log::write("[444]".print_r($user, true), 'debug');
+            if(empty($user)) {
+                $data = [];
+                $data['nickname'] = \Cache::get('nickname');
+                $data['openid']   = \Cache::get('openid');
+                $user = $this->create($data);
+                if (!$user){
+                    $this->error = $this->error;
+                    return false;
+                }
+            }
+
+            $auth = [];
+            $auth['id'] = $user->id;
+            $auth['openid'] = \Cache::get('openid');
+            cookie('user_auth', encrypt(json_encode($auth)));
+            
+        } catch (\Exception $e) {
+            \Log::write("[555]".print_r($e->getMessage(), true), 'debug');
+            return false;
         }
-
-        $auth = [];
-        $auth['id'] = $user->id;
-        $auth['openid'] = $userinfo['id'];
-        cookie('user_auth', encrypt(json_encode($auth)));
-
+        \Log::write("[444-1]".print_r($user, true), 'debug');
         return $user;
     }
 }
